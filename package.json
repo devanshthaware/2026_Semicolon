@@ -1,0 +1,21 @@
+{
+  "name": "truthlayer",
+  "private": true,
+  "packageManager": "npm@11.13.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:platform": "npm run dev --workspace=@truthlayer/platform",
+    "dev:showcase": "npm run dev --workspace=@truthlayer/showcase",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "db:generate": "prisma generate --schema prisma/schema.prisma",
+    "db:validate": "prisma validate --schema prisma/schema.prisma",
+    "artifacts:generate": "node scripts/generate-synthetic-artifacts.mjs"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.0"
+  }
+}

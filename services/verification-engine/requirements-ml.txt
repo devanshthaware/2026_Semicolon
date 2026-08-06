@@ -1,0 +1,16 @@
+-r requirements.txt
+
+# Enable only in model-capable deployments. These packages provide the adapters
+# defined by the engine; model weights and calibration artifacts are provisioned
+# separately and never committed to this repository.
+transformers==4.56.0
+torch==2.8.0
+sentence-transformers==5.1.0
+qdrant-client==1.15.1
+rank-bm25==0.2.2
+lightgbm==4.6.0
+scikit-learn==1.7.1
+datasets==3.6.0
+accelerate==1.10.0
+langgraph==0.6.6
+joblib==1.5.1

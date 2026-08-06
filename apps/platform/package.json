@@ -1,0 +1,25 @@
+{
+  "name": "@truthlayer/platform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "@auth/prisma-adapter": "^2.10.0",
+    "bcryptjs": "^3.0.2",
+    "next": "^16.0.0",
+    "next-auth": "^5.0.0-beta.29",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.8.3"
+  }
+}

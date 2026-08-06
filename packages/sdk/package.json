@@ -1,0 +1,16 @@
+{
+  "name": "@truthlayer/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript client for the TruthLayer verification API",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "artifactType": "synthetic-logistic-fusion",
+  "featureNames": [
+    "sep",
+    "semantic",
+    "kernel",
+    "grounding",
+    "retrieval"
+  ],
+  "weights": [
+    -0.03786950103712604,
+    0.8399608356740392,
+    0.8413987719362499,
+    1.3388656943073556,
+    0.28491982309770325
+  ],
+  "bias": -1.6201803605007454,
+  "training": {
+    "dataset": "data/synthetic/train.jsonl",
+    "examples": 480,
+    "evaluationAccuracy": 0.675,
+    "warning": "Synthetic-only artifact. Do not use for production reliability claims."
+  }
+}
