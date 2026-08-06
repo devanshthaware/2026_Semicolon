@@ -66,13 +66,16 @@ model VerificationToken {
 }
 
 model Organization {
-  id        String                @id @default(cuid())
-  name      String
-  slug      String                @unique
-  createdAt DateTime              @default(now())
-  members   OrganizationMember[]
-  apiKeys   ApiKey[]
-  sessions  VerificationSession[]
+  id              String                @id @default(cuid())
+  name            String
+  slug            String                @unique
+  createdAt       DateTime              @default(now())
+  members         OrganizationMember[]
+  apiKeys         ApiKey[]
+  sessions        VerificationSession[]
+  evidenceSources EvidenceSource[]
+  documents       Document[]
+  ingestionJobs   IngestionJob[]
 }
 
 model OrganizationMember {
@@ -87,16 +90,16 @@ model OrganizationMember {
 }
 
 model ApiKey {
-  id             String       @id @default(cuid())
+  id             String                @id @default(cuid())
   name           String
   prefix         String
-  secretHash     String       @unique
-  status         ApiKeyStatus @default(ACTIVE)
+  secretHash     String                @unique
+  status         ApiKeyStatus          @default(ACTIVE)
   lastUsedAt     DateTime?
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime              @default(now())
   revokedAt      DateTime?
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   sessions       VerificationSession[]
 
   @@index([organizationId, status])
@@ -117,4 +120,48 @@ model VerificationSession {
   apiKey         ApiKey?             @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
 
   @@index([organizationId, createdAt])
+}
+
+model EvidenceSource {
+  id             String       @id @default(cuid())
+  name           String
+  type           String       @default("general") // e.g. healthcare, legal
+  createdAt      DateTime     @default(now())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  documents      Document[]
+}
+
+model Document {
+  id               String          @id @default(cuid())
+  evidenceSourceId String
+  title            String
+  url              String?
+  checksum         String?
+  createdAt        DateTime        @default(now())
+  organizationId   String
+  source           EvidenceSource  @relation(fields: [evidenceSourceId], references: [id], onDelete: Cascade)
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  chunks           DocumentChunk[]
+  jobs             IngestionJob[]
+}
+
+model DocumentChunk {
+  id         String   @id @default(cuid())
+  documentId String
+  text       String
+  vectorId   String   @unique
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+}
+
+model IngestionJob {
+  id             String       @id @default(cuid())
+  documentId     String
+  status         String       @default("pending") // pending, processing, completed, failed
+  error          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organizationId String
+  document       Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }

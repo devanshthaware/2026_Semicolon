@@ -4,7 +4,8 @@
   "packageManager": "npm@11.13.0",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "frontend/*"
   ],
   "scripts": {
     "dev:platform": "npm run dev --workspace=@truthlayer/platform",

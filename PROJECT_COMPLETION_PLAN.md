@@ -60,11 +60,11 @@ Not yet complete:
 
 ### Work
 
-- Add Auth.js authentication with email/password or OAuth provider support.
-- Added the credentials-based registration/sign-in foundation; organization onboarding and protected dashboard authorization remain.
+- **(Completed)** Add Auth.js authentication with email/password or OAuth provider support.
+- **(Completed)** Added the credentials-based registration/sign-in foundation; organization onboarding and protected dashboard authorization remain.
 - Add organization onboarding, membership roles (`owner`, `admin`, `member`), and organization switching.
 - Replace the temporary bootstrap-token key routes with session/organization authorization.
-- Build dashboard routes: overview, playground, sessions, API keys, analytics, settings, and docs.
+- **(Completed)** Build dashboard routes: overview, playground, sessions, API keys, analytics, settings, and docs.
 - Add key creation/revocation UI, key permissions/scopes, usage metering, rate limiting, and audit events.
 - Persist sessions and receipts in PostgreSQL; add filtering, pagination, and receipt-detail views.
 
@@ -78,10 +78,10 @@ Not yet complete:
 
 ### Work
 
-- Define evidence-source and document-chunk database models.
+- **(Completed)** Define evidence-source and document-chunk database models.
 - Build ingestion for curated documents first; add URL/PDF/file ingestion after source metadata is stable.
-- Normalize, chunk, embed, and index evidence in Qdrant.
-- Add BM25 sparse index and reciprocal-rank fusion with dense retrieval.
+- **(Completed)** Normalize, chunk, embed, and index evidence in Qdrant.
+- **(Completed)** Add BM25 sparse index and reciprocal-rank fusion with dense retrieval.
 - Add cross-encoder reranking and evidence provenance: source URL, title, chunk ID, timestamp, and checksum.
 - Add source allowlists and domain-specific knowledge collections for healthcare, legal, and finance demos.
 

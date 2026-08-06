@@ -6,9 +6,9 @@ This repository contains three separately deployable products:
 
 | Workspace | Purpose |
 | --- | --- |
-| `apps/platform` | TruthLayer dashboard and public verification API |
+| `frontend/platform` | TruthLayer dashboard and public verification API |
 | `packages/sdk` | TypeScript SDK for the public API |
-| `apps/showcase` | Consumer demo that uses only the SDK |
+| `frontend/showcase` | Consumer demo that uses only the SDK |
 
 ## Quick start
 
@@ -21,7 +21,7 @@ npm.cmd run dev:showcase
 
 The platform runs at `http://localhost:3000`; the showcase runs at `http://localhost:3001`.
 
-To delegate the platform API to the FastAPI verification engine, run the `verification-engine` service described in [its README](services/verification-engine/README.md) and copy `apps/platform/.env.example` to `apps/platform/.env.local`.
+To delegate the platform API to the FastAPI verification engine, run the `verification-engine` service described in [its README](services/verification-engine/README.md) and copy `frontend/platform/.env.example` to `frontend/platform/.env.local`.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for system boundaries and [DEVELOPMENT_LOG.md](DEVELOPMENT_LOG.md) for the implementation record.
 

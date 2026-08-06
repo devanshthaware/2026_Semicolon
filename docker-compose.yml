@@ -23,7 +23,9 @@ services:
       dockerfile: services/verification-engine/Dockerfile
     environment:
       QDRANT_URL: http://qdrant:6333
-      NLI_BACKEND: lexical
+      NLI_BACKEND: transformers
+      NLI_MODEL: MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli
+      EMBEDDING_MODEL: BAAI/bge-large-en-v1.5
       FUSION_MODEL_PATH: /artifacts/fusion/synthetic-logistic-v1.json
       CONFORMAL_CALIBRATION_PATH: /artifacts/conformal/synthetic-90-v1.json
       SEP_PROBE_PATH: /artifacts/sep/synthetic-linear-probe-v1.json

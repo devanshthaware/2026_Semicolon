@@ -4,7 +4,7 @@ TruthLayer uses PostgreSQL through Prisma. The data model in `prisma/schema.pris
 
 ## Local setup
 
-1. Start PostgreSQL and copy `apps/platform/.env.example` to `apps/platform/.env.local`.
+1. Start PostgreSQL and copy `frontend/platform/.env.example` to `frontend/platform/.env.local`.
 2. Set a strong `TRUTHLAYER_BOOTSTRAP_TOKEN` and `AUTH_SECRET`. The bootstrap token protects initial operations; dashboard authentication is provided by Auth.js credentials.
 3. Apply the schema:
 
