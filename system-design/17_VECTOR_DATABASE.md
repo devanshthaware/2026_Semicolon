@@ -1,6 +1,6 @@
 # 17_VECTOR_DATABASE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 17 -- Vector Database Architecture
 
@@ -10,7 +10,7 @@
 
 # Purpose
 
-This chapter defines the vector database architecture used by TruthLayer
+This chapter defines the vector database architecture used by Argus
 for semantic retrieval. It covers document ingestion, chunking,
 embedding generation, indexing, metadata management, search execution,
 and maintenance.
@@ -195,7 +195,7 @@ Example payload:
 {
   "document_id": "doc_001",
   "chunk_id": "chunk_042",
-  "title": "TruthLayer Architecture",
+  "title": "Argus Architecture",
   "source": "internal",
   "section": "Retrieval",
   "created_at": "2026-01-01",

@@ -1,12 +1,12 @@
-# TruthLayer Vision Alignment and Remaining Work
+# Argus Vision Alignment and Remaining Work
 
 ## Purpose
 
-This document compares the current codebase with the V1–V4 project plans and records the exact work required to finish TruthLayer without diluting its original ambition.
+This document compares the current codebase with the V1–V4 project plans and records the exact work required to finish Argus without diluting its original ambition.
 
 ## Vision from the project plans
 
-TruthLayer is intended to be verification infrastructure for LLM output, not a basic RAG chatbot or a generic fact-checker. Its differentiators are:
+Argus is intended to be verification infrastructure for LLM output, not a basic RAG chatbot or a generic fact-checker. Its differentiators are:
 
 1. **Per-claim trust**, not one opaque response-level score.
 2. **Four complementary signals**: semantic entropy probe (SEP), semantic entropy (SE), kernel language entropy (KLE), and retrieval-grounded entailment.
@@ -14,7 +14,7 @@ TruthLayer is intended to be verification infrastructure for LLM output, not a b
 4. **Fusion**, rather than trusting a single detector.
 5. **Conformal calibration** so a displayed confidence level is measured and supportable.
 6. **Evidence receipts and visual explanations** that make decisions auditable.
-7. **SDK-first delivery**: outside applications must use TruthLayer through the public API and SDK.
+7. **SDK-first delivery**: outside applications must use Argus through the public API and SDK.
 8. **Graceful degradation** when hidden states or local models are unavailable.
 9. **Agentic orchestration with limits**: agents improve retrieval/evidence collection but cannot invent truth or replace deterministic scoring.
 
@@ -23,7 +23,7 @@ TruthLayer is intended to be verification infrastructure for LLM output, not a b
 | Area | Alignment | Current state |
 | --- | --- | --- |
 | Three-product structure | Aligned | Platform, SDK, and separate showcase workspaces exist. |
-| SDK-first showcase | Aligned | Showcase imports `@truthlayer/sdk`, not platform internals. |
+| SDK-first showcase | Aligned | Showcase imports `@argus/sdk`, not platform internals. |
 | API/receipt contract | Partially aligned | Public verification response exists; streaming/versioned receipt expansion remains. |
 | Retrieval-grounded NLI | Partially aligned | Adapter and lexical fallback exist; Qdrant/BM25/DeBERTa are not running. |
 | Semantic entropy | Partially aligned | Formula/module exists; no real multi-sample model integration or NLI clustering yet. |
@@ -138,7 +138,7 @@ Implementation:
 5. Add semantic-kernel evidence graph and downloadable JSON/PDF receipt.
 6. Complete healthcare/legal/finance demos using carefully curated source collections and safety disclaimers.
 
-**Acceptance:** the showcase proves an external developer can integrate TruthLayer entirely through the SDK.
+**Acceptance:** the showcase proves an external developer can integrate Argus entirely through the SDK.
 
 ### Step 9 — Production hardening
 
@@ -163,4 +163,4 @@ Implementation:
 
 ## Definition of complete
 
-TruthLayer is complete only when an authenticated external developer can install the SDK, call a deployed public API, receive streamed claim-level receipts with real cited evidence and calibrated scores, inspect those sessions in the dashboard, and reproduce benchmark-backed evaluation results.
+Argus is complete only when an authenticated external developer can install the SDK, call a deployed public API, receive streamed claim-level receipts with real cited evidence and calibrated scores, inspect those sessions in the dashboard, and reproduce benchmark-backed evaluation results.

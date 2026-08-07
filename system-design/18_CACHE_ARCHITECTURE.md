@@ -1,6 +1,6 @@
 # 18_CACHE_ARCHITECTURE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 18 -- Cache Architecture
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the caching architecture used by TruthLayer. It
+This chapter defines the caching architecture used by Argus. It
 describes how Redis is used to improve performance, coordinate
 distributed workflows, support streaming, and reduce repeated
 computation.

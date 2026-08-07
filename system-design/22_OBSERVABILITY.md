@@ -1,6 +1,6 @@
 # 22_OBSERVABILITY.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 22 -- Observability
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the observability architecture for TruthLayer. It
+This chapter defines the observability architecture for Argus. It
 covers logging, metrics, distributed tracing, LangSmith integration,
 dashboards, alerting, health monitoring, and operational diagnostics.
 

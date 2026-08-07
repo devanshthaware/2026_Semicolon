@@ -1,6 +1,6 @@
 # 13_MODEL_TRAINING.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 13 -- Model Training
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter defines the end-to-end training pipeline for all custom AI
-models used by TruthLayer. It standardizes data preparation, experiment
+models used by Argus. It standardizes data preparation, experiment
 management, evaluation, model registration, and deployment readiness.
 
 ------------------------------------------------------------------------

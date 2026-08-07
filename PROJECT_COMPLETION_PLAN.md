@@ -1,11 +1,11 @@
-# TruthLayer Completion Plan
+# Argus Completion Plan
 
 ## Objective
 
-Finish TruthLayer as a trustworthy LLM-verification platform with three products:
+Finish Argus as a trustworthy LLM-verification platform with three products:
 
-1. **TruthLayer platform** — authenticated dashboard, verification API, evidence receipts, API keys, sessions, analytics, and operational controls.
-2. **TruthLayer SDK** — publishable TypeScript client, then Python client, for verified responses and streaming events.
+1. **Argus platform** — authenticated dashboard, verification API, evidence receipts, API keys, sessions, analytics, and operational controls.
+2. **Argus SDK** — publishable TypeScript client, then Python client, for verified responses and streaming events.
 3. **SDK showcase** — a separate consumer application that uses only the public SDK/API across general, healthcare, legal, and finance workflows.
 
 The system must preserve the V1–V4 differentiation: it is not just RAG. It combines internal uncertainty, sampled semantic disagreement, continuous kernel entropy, external evidence/NLI, interpretable fusion, and calibrated confidence.
@@ -15,7 +15,7 @@ The system must preserve the V1–V4 differentiation: it is not just RAG. It com
 Completed:
 
 - npm monorepo with Next.js 16 platform and SDK showcase.
-- Public verification API and `@truthlayer/sdk` contract.
+- Public verification API and `@argus/sdk` contract.
 - FastAPI verification-engine boundary.
 - PostgreSQL/Prisma schema and API-key primitives.
 - Docker Compose definitions for PostgreSQL, Qdrant, and the engine.
@@ -32,7 +32,7 @@ Not yet complete:
 
 ## Architecture guardrails
 
-- The showcase imports `@truthlayer/sdk` only; it cannot import platform internals.
+- The showcase imports `@argus/sdk` only; it cannot import platform internals.
 - The SDK/API response contract is versioned and backward compatible.
 - LangGraph/LangChain may coordinate retrieval and retry workflows, but never replaces explicit entropy, NLI, fusion, or conformal calculations.
 - A missing trained model must report `unavailable`, never an invented model score.

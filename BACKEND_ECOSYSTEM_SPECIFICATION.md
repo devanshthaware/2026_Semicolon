@@ -1,13 +1,13 @@
 # BACKEND_ECOSYSTEM_SPECIFICATION.md
 
-# TruthLayer Python Backend Ecosystem
+# Argus Python Backend Ecosystem
 
 **Version:** 1.0
 
 ## Purpose
 
 This document is the **single source of truth** for the complete Python
-backend ecosystem of TruthLayer. It explains how every service, agent,
+backend ecosystem of Argus. It explains how every service, agent,
 pretrained component, custom AI model, and dataset work together during
 training and inference.
 
@@ -108,7 +108,7 @@ candidates 4. BGE Reranker 5. Return evidence
 
 ## AI Model Service
 
-Hosts all trainable TruthLayer models.
+Hosts all trainable Argus models.
 
 ------------------------------------------------------------------------
 
@@ -253,7 +253,7 @@ NLI  Evidence  Z3/Python  Rules     Embeddings
 # Repository Layout
 
 ``` text
-truthlayer-backend/
+argus-backend/
 │
 ├── api/
 ├── graph/

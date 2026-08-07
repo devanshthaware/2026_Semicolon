@@ -1,6 +1,6 @@
 # 15_RETRIEVAL_SYSTEM.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 15 -- Retrieval System
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter defines the hybrid retrieval architecture used by
-TruthLayer to ground AI-generated claims with supporting evidence before
+Argus to ground AI-generated claims with supporting evidence before
 trust scoring.
 
 ------------------------------------------------------------------------

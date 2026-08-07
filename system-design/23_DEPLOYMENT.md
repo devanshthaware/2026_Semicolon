@@ -1,6 +1,6 @@
 # 23_DEPLOYMENT.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 23 -- Deployment Architecture
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the deployment architecture for TruthLayer,
+This chapter defines the deployment architecture for Argus,
 including local development, staging, production, containerization,
 orchestration, networking, scaling, configuration, and release strategy.
 

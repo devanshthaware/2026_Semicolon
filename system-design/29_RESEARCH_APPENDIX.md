@@ -1,6 +1,6 @@
 # 29_RESEARCH_APPENDIX.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 29 -- Research Appendix
 
@@ -13,7 +13,7 @@
 
 This appendix summarizes the research foundations, algorithms, datasets,
 models, evaluation methods, and future research directions that inform
-the TruthLayer architecture. It serves as a technical reference for
+the Argus architecture. It serves as a technical reference for
 researchers and contributors.
 
 ------------------------------------------------------------------------
@@ -43,7 +43,7 @@ researchers and contributors.
 
 ------------------------------------------------------------------------
 
-# TruthLayer Research Stack
+# Argus Research Stack
 
 ``` text
 Prompt
@@ -117,7 +117,7 @@ Dataset: - Fusion_Trust_Model_Datasets
 
 # Pretrained Components
 
-TruthLayer integrates:
+Argus integrates:
 
 -   Base LLMs (Qwen, Llama, Gemma, Mistral)
 -   DeBERTa-v3-MNLI
@@ -256,4 +256,4 @@ Recommended benchmark categories:
 -   Chapter 28 defined failure recovery and resilience.
 -   **Chapter 29 provides the research appendix and technical
     reference.**
--   This concludes the TruthLayer System Design documentation.
+-   This concludes the Argus System Design documentation.

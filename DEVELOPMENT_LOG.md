@@ -4,13 +4,13 @@
 
 - Created an npm-workspace monorepo.
 - Added independent Next.js 16 platform and showcase applications.
-- Added `@truthlayer/sdk` as the sole integration path from showcase to platform.
+- Added `@argus/sdk` as the sole integration path from showcase to platform.
 - Defined the first public verification request/result contract.
 - Implemented a deterministic development verifier to make the end-to-end experience usable before the ML pipeline is connected.
 - Installed the workspace dependencies and verified that all three workspaces build with Next.js 16.3.0 and TypeScript.
 - Exercised `POST /api/v1/verify` locally with the France/Eiffel Tower example; it returned a grounded, per-claim receipt.
 - Extracted verification logic from the HTTP route into a dedicated pipeline boundary and added a development sessions endpoint. This makes it possible to replace the temporary estimator with the actual ML services without breaking the SDK contract.
-- Added the standalone FastAPI verification-engine service. The platform can now delegate verification to `TRUTHLAYER_ENGINE_URL` while retaining the existing SDK and API contract.
+- Added the standalone FastAPI verification-engine service. The platform can now delegate verification to `ARGUS_ENGINE_URL` while retaining the existing SDK and API contract.
 - Confirmed the TypeScript workspaces still build after the engine integration. Python is not installed in the current environment, so the FastAPI service needs runtime validation on a Python-enabled machine or through Docker.
 - Added PostgreSQL/Prisma models for organizations, users, API keys, and verification sessions. Added API-key bootstrap, listing, revocation, authentication, and authenticated receipt persistence routes. Schema validation and Prisma Client generation passed; a local PostgreSQL instance is still required to apply the first migration and exercise database-backed requests.
 - Expanded the FastAPI engine into V1–V4 modules for hybrid retrieval, NLI, semantic entropy, kernel language entropy, SEP, fusion, conformal calibration, and async orchestration. Docker Compose now defines PostgreSQL, Qdrant, and the engine. Model-backed layers deliberately report unavailable until real model/artifact configuration is supplied.

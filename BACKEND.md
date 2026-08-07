@@ -1,4 +1,4 @@
-# TruthLayer Backend Ecosystem
+# Argus Backend Ecosystem
 
 This is the implementation map for the V1–V4 architecture. It intentionally separates transport and product concerns from the verification science.
 
@@ -32,7 +32,7 @@ The engine is functional in a lightweight local mode:
 - asynchronous per-claim orchestration;
 - stable receipts, evidence, diagnostics, and degradation reporting.
 
-The platform delegates to it when `TRUTHLAYER_ENGINE_URL` is set. Otherwise, it uses the platform’s development fallback to keep UI/SDK work unblocked.
+The platform delegates to it when `ARGUS_ENGINE_URL` is set. Otherwise, it uses the platform’s development fallback to keep UI/SDK work unblocked.
 
 ## Model-backed deployment
 

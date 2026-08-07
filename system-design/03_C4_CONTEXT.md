@@ -1,6 +1,6 @@
 # 03_C4_CONTEXT.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 3 -- C4 Context Diagram
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the **Level 1 (Context)** view of the TruthLayer
+This chapter defines the **Level 1 (Context)** view of the Argus
 architecture using the C4 model. It identifies the people, external
 systems, and major relationships surrounding the platform.
 
@@ -19,11 +19,11 @@ systems, and major relationships surrounding the platform.
 
 # System Scope
 
-TruthLayer is an independent AI verification platform that integrates
+Argus is an independent AI verification platform that integrates
 with Large Language Models (LLMs) to verify responses before they are
 presented to users or applications.
 
-TruthLayer does **not** replace an LLM. It augments LLMs with
+Argus does **not** replace an LLM. It augments LLMs with
 verification, evidence retrieval, trust scoring, and explainable
 receipts.
 
@@ -33,7 +33,7 @@ receipts.
 
 ## End User
 
-Uses AI-powered applications backed by TruthLayer.
+Uses AI-powered applications backed by Argus.
 
 Responsibilities:
 
@@ -46,7 +46,7 @@ Responsibilities:
 
 ## Developer
 
-Integrates TruthLayer into products using the SDK or REST API.
+Integrates Argus into products using the SDK or REST API.
 
 Responsibilities:
 
@@ -121,7 +121,7 @@ LangSmith records:
                                    │
                                    ▼
                     ┌────────────────────────────┐
-                    │      TruthLayer Platform   │
+                    │      Argus Platform   │
                     │                            │
                     │  • API Gateway             │
                     │  • LangGraph Workflow      │
@@ -148,30 +148,30 @@ LangSmith records:
   -----------------------------------------------------------------------
   Source                 Target                 Purpose
   ---------------------- ---------------------- -------------------------
-  End User               TruthLayer             Submit prompts and
+  End User               Argus             Submit prompts and
                                                 receive verified
                                                 responses
 
-  Developer              TruthLayer             API and SDK integration
+  Developer              Argus             API and SDK integration
 
-  TruthLayer             LLM                    Generate candidate
+  Argus             LLM                    Generate candidate
                                                 responses
 
-  TruthLayer             Knowledge Sources      Retrieve supporting
+  Argus             Knowledge Sources      Retrieve supporting
                                                 evidence
 
-  TruthLayer             LangSmith              Trace execution and
+  Argus             LangSmith              Trace execution and
                                                 diagnostics
 
-  Administrator          TruthLayer             Operate and configure
+  Administrator          Argus             Operate and configure
                                                 platform
   -----------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
-# Responsibilities of TruthLayer
+# Responsibilities of Argus
 
-TruthLayer is responsible for:
+Argus is responsible for:
 
 -   Orchestrating verification workflows
 -   Extracting claims
@@ -199,7 +199,7 @@ The following are external to the platform:
 
 # Design Principles
 
-1.  TruthLayer is a verification layer, not a language model.
+1.  Argus is a verification layer, not a language model.
 2.  External systems remain loosely coupled.
 3.  Verification is independent of generation.
 4.  Every external dependency is replaceable.

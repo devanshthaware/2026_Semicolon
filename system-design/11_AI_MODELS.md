@@ -1,6 +1,6 @@
 # 11_AI_MODELS.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 11 -- AI Models
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter documents every trainable AI model used by TruthLayer,
+This chapter documents every trainable AI model used by Argus,
 their responsibilities, datasets, inputs, outputs, training strategy,
 inference pipeline, deployment, and lifecycle.
 

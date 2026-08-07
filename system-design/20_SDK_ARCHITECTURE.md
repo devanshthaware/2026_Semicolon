@@ -1,6 +1,6 @@
 # 20_SDK_ARCHITECTURE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 20 -- SDK Architecture
 
@@ -10,9 +10,9 @@
 
 # Purpose
 
-This chapter defines the architecture of the official TruthLayer SDKs.
+This chapter defines the architecture of the official Argus SDKs.
 The SDKs provide a consistent, language-native interface for developers
-to integrate TruthLayer verification services without interacting
+to integrate Argus verification services without interacting
 directly with the REST or streaming APIs.
 
 ------------------------------------------------------------------------
@@ -48,7 +48,7 @@ directly with the REST or streaming APIs.
 Application
       │
       ▼
- TruthLayer SDK
+ Argus SDK
       │
  ┌────┼───────────────┐
  ▼    ▼               ▼
@@ -85,9 +85,9 @@ Responsibilities:
 Example:
 
 ``` python
-client = TruthLayerClient(
+client = ArgusClient(
     api_key="...",
-    base_url="https://api.truthlayer.ai"
+    base_url="https://api.argus.ai"
 )
 ```
 
@@ -312,5 +312,5 @@ sdk/
 -   Chapter 19 defined the external API.
 -   **Chapter 20 defines the SDK architecture and developer integration
     layer.**
--   Chapter 21 describes the security architecture for the TruthLayer
+-   Chapter 21 describes the security architecture for the Argus
     platform.

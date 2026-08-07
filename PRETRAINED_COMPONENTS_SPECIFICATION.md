@@ -1,13 +1,13 @@
 # PRETRAINED_COMPONENTS_SPECIFICATION.md
 
-# TruthLayer Pretrained Components Specification
+# Argus Pretrained Components Specification
 
 **Version:** 1.0
 
 ## Purpose
 
 This document is the source of truth for all third-party pretrained
-models and algorithmic engines used by TruthLayer. It defines why each
+models and algorithmic engines used by Argus. It defines why each
 component exists, where it is used, its inputs, outputs, and replacement
 strategy.
 

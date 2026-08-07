@@ -1,6 +1,6 @@
 # 30_GLOSSARY.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 30 -- Glossary
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This glossary defines the terminology used throughout the TruthLayer
+This glossary defines the terminology used throughout the Argus
 System Design documentation. It provides consistent definitions for
 architectural concepts, AI models, workflows, infrastructure, datasets,
 and operational terms.
@@ -114,7 +114,7 @@ Retrieved passages used to verify an atomic claim.
 
 ## FastAPI
 
-The Python web framework used for TruthLayer's API Gateway.
+The Python web framework used for Argus's API Gateway.
 
 ## Fusion Trust Model
 
@@ -321,9 +321,9 @@ Guidelines:
 
 # Relationship to Documentation
 
--   Chapters 1--29 define the TruthLayer architecture, implementation,
+-   Chapters 1--29 define the Argus architecture, implementation,
     operations, and research.
 -   **Chapter 30 provides the canonical glossary and terminology
     reference.**
 
-This glossary concludes the TruthLayer System Design documentation.
+This glossary concludes the Argus System Design documentation.

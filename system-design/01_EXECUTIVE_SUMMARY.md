@@ -1,20 +1,20 @@
 # 01_EXECUTIVE_SUMMARY.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Executive Summary
 
 **Document Version:** 1.0\
 **Status:** Source of Truth\
-**Project:** TruthLayer -- Real-Time AI Verification Infrastructure
+**Project:** Argus -- Real-Time AI Verification Infrastructure
 
 ------------------------------------------------------------------------
 
 # Purpose
 
-TruthLayer is an AI verification infrastructure designed to improve the
+Argus is an AI verification infrastructure designed to improve the
 trustworthiness of Large Language Models (LLMs). Rather than replacing
-existing LLMs, TruthLayer operates as an independent verification layer
+existing LLMs, Argus operates as an independent verification layer
 that analyzes AI-generated responses before they reach the end user.
 
 The platform combines uncertainty estimation, evidence retrieval,
@@ -22,7 +22,7 @@ logical verification, temporal validation, cross-model agreement, and
 statistical calibration to produce an explainable and measurable trust
 score for every response.
 
-The objective is not to determine absolute truth. Instead, TruthLayer
+The objective is not to determine absolute truth. Instead, Argus
 estimates how much confidence should be placed in a model-generated
 answer and provides transparent evidence supporting that assessment.
 
@@ -30,13 +30,13 @@ answer and provides transparent evidence supporting that assessment.
 
 # Vision
 
-TruthLayer aims to become the trust infrastructure for AI applications.
+Argus aims to become the trust infrastructure for AI applications.
 
 Instead of asking:
 
 > "Is this answer correct?"
 
-TruthLayer asks:
+Argus asks:
 
 > "How much evidence supports this answer, how uncertain is the model,
 > and how confident should the user be?"

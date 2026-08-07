@@ -1,6 +1,6 @@
 # 21_SECURITY.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 21 -- Security Architecture
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the security architecture for the TruthLayer
+This chapter defines the security architecture for the Argus
 platform. It covers identity, authentication, authorization, data
 protection, infrastructure security, model security, monitoring, and
 incident response.

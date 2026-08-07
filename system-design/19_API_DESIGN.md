@@ -1,6 +1,6 @@
 # 19_API_DESIGN.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 19 -- API Design
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the external API exposed by TruthLayer. It
+This chapter defines the external API exposed by Argus. It
 specifies REST endpoints, streaming interfaces, authentication,
 request/response contracts, versioning, SDK compatibility, and error
 handling.

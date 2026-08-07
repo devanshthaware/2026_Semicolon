@@ -1,6 +1,6 @@
 # 06_BACKEND_ARCHITECTURE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 6 -- Backend Architecture
 
@@ -14,7 +14,7 @@
 This chapter defines the architecture of the Python backend. It explains
 how FastAPI, LangGraph, LangChain, LangSmith, verification agents, AI
 models, storage systems, and supporting services work together to
-execute the TruthLayer verification pipeline.
+execute the Argus verification pipeline.
 
 ------------------------------------------------------------------------
 

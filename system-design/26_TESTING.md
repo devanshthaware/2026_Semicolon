@@ -1,6 +1,6 @@
 # 26_TESTING.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 26 -- Testing & Quality Assurance
 
@@ -10,7 +10,7 @@
 
 # Purpose
 
-This chapter defines the testing strategy for TruthLayer across
+This chapter defines the testing strategy for Argus across
 frontend, backend, AI models, workflows, infrastructure, and deployment.
 The objective is to ensure every verification result is reliable,
 reproducible, performant, and secure.

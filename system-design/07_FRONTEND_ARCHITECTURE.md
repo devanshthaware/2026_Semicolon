@@ -1,6 +1,6 @@
 # 07_FRONTEND_ARCHITECTURE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 7 -- Frontend Architecture
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the architecture of the TruthLayer frontend
+This chapter defines the architecture of the Argus frontend
 applications, their responsibilities, communication with the backend,
 state management, and visualization strategy.
 
@@ -19,7 +19,7 @@ state management, and visualization strategy.
 
 # Frontend Applications
 
-TruthLayer consists of two frontend applications.
+Argus consists of two frontend applications.
 
 ## Project 1 -- Platform
 

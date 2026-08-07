@@ -1,6 +1,6 @@
 # 08_LANGGRAPH_DESIGN.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 8 -- LangGraph Design
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines how LangGraph orchestrates the TruthLayer
+This chapter defines how LangGraph orchestrates the Argus
 verification workflow. LangGraph owns execution, shared state,
 branching, retries, and synchronization between verification agents.
 

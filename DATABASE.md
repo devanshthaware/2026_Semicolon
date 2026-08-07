@@ -1,15 +1,15 @@
 # Database and API-key Operations
 
-TruthLayer uses PostgreSQL through Prisma. The data model in `prisma/schema.prisma` contains users, organizations, memberships, API keys, and verification receipts.
+Argus uses PostgreSQL through Prisma. The data model in `prisma/schema.prisma` contains users, organizations, memberships, API keys, and verification receipts.
 
 ## Local setup
 
-1. Start PostgreSQL and copy `frontend/platform/.env.example` to `frontend/platform/.env.local`.
-2. Set a strong `TRUTHLAYER_BOOTSTRAP_TOKEN` and `AUTH_SECRET`. The bootstrap token protects initial operations; dashboard authentication is provided by Auth.js credentials.
+1. Start PostgreSQL and copy `apps/platform/.env.example` to `apps/platform/.env.local`.
+2. Set a strong `ARGUS_BOOTSTRAP_TOKEN` and `AUTH_SECRET`. The bootstrap token protects initial operations; dashboard authentication is provided by Auth.js credentials.
 3. Apply the schema:
 
 ```powershell
-$env:DATABASE_URL='postgresql://truthlayer:truthlayer@localhost:5432/truthlayer?schema=public'
+$env:DATABASE_URL='postgresql://argus:argus@localhost:5432/argus?schema=public'
 npx prisma migrate dev --schema prisma/schema.prisma --name init
 ```
 
@@ -19,7 +19,7 @@ Create an organization and its first key. The returned `secret` is shown once an
 
 ```text
 POST /api/v1/keys
-x-truthlayer-bootstrap-token: <bootstrap token>
+x-argus-bootstrap-token: <bootstrap token>
 
 {
   "organizationName": "Acme",

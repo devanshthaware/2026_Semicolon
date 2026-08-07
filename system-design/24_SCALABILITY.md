@@ -1,6 +1,6 @@
 # 24_SCALABILITY.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 24 -- Scalability Architecture
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines how TruthLayer scales from a single-node
+This chapter defines how Argus scales from a single-node
 development environment to a multi-region production platform. It covers
 horizontal scaling, distributed execution, database scaling, vector
 search, model serving, autoscaling, capacity planning, and performance

@@ -1,11 +1,11 @@
-# TruthLayer Architecture
+# Argus Architecture
 
 ## Product boundaries
 
-TruthLayer deliberately separates the verification platform from the developer-facing demo:
+Argus deliberately separates the verification platform from the developer-facing demo:
 
 ```text
-SDK showcase app  ──uses──>  @truthlayer/sdk  ──calls──>  TruthLayer public API
+SDK showcase app  ──uses──>  @argus/sdk  ──calls──>  Argus public API
                                                               │
                                                               ▼
                                                    Verification pipeline
@@ -43,7 +43,7 @@ The initial API implements a deterministic, explainable development estimator. I
 }
 ```
 
-It returns an overall trust score, per-claim verdicts, layer scores, evidence placeholders, and a verification receipt. The contract is represented in `@truthlayer/sdk` and used by the showcase.
+It returns an overall trust score, per-claim verdicts, layer scores, evidence placeholders, and a verification receipt. The contract is represented in `@argus/sdk` and used by the showcase.
 
 `GET /api/v1/sessions` returns the most recent development-session summaries. Sessions are currently process-memory only; PostgreSQL-backed storage is the next persistence milestone.
 

@@ -1,15 +1,15 @@
-# TruthLayer — Implementation Plan
+# Argus — Implementation Plan
 
 **Status:** implementation roadmap  
-**Scope:** TruthLayer platform, Python verification engine, `@truthlayer/sdk`, and SDK showcase  
-**Source of truth:** V1–V4 product documents, `ARCHITECTURE.md`, `UI_Plan.md`, and `TruthLayer_Model_Swap_Architecture.md`
+**Scope:** Argus platform, Python verification engine, `@argus/sdk`, and SDK showcase  
+**Source of truth:** V1–V4 product documents, `ARCHITECTURE.md`, `UI_Plan.md`, and `Argus_Model_Swap_Architecture.md`
 
 ## Outcome
 
 Deliver a locally runnable, evidence-first verification platform with two Next.js 16 applications:
 
-1. **TruthLayer Platform** — organizations, API keys, evidence ingestion, verification history, and explainable verdicts.
-2. **SDK Showcase** — a separate application that verifies content exclusively through `@truthlayer/sdk` and the public TruthLayer API.
+1. **Argus Platform** — organizations, API keys, evidence ingestion, verification history, and explainable verdicts.
+2. **SDK Showcase** — a separate application that verifies content exclusively through `@argus/sdk` and the public Argus API.
 
 The backend must produce grounded claims, evidence citations, calibrated confidence, uncertainty/abstention, model provenance, and bounded agent traces. Synthetic artifacts are allowed only as a development fallback; the release evaluation uses real benchmark data and real model outputs.
 
@@ -95,7 +95,7 @@ The supplied SEP vectors are 8-dimensional synthetic inputs. They prove the trai
 
 ## Phase 2 — Model-swap architecture and providers
 
-**Goal:** implement the role-based architecture specified in `TruthLayer_Model_Swap_Architecture.md`.
+**Goal:** implement the role-based architecture specified in `Argus_Model_Swap_Architecture.md`.
 
 ### Tasks
 
@@ -196,16 +196,16 @@ The supplied SEP vectors are 8-dimensional synthetic inputs. They prove the trai
 
 ### Tasks
 
-1. Finish the **TruthLayer Platform** (Next.js 16): authentication, onboarding, organization switcher, API key management, evidence source upload/status, verification composer, result detail, history, and settings.
+1. Finish the **Argus Platform** (Next.js 16): authentication, onboarding, organization switcher, API key management, evidence source upload/status, verification composer, result detail, history, and settings.
 2. Connect every platform action to the live backend; remove mock or duplicate verification paths.
 3. Make claim details visual: supporting/contradicting evidence, L1–L4 scores, fusion/confidence, conformal set, abstention reasons, and model/version provenance.
-4. Finish `@truthlayer/sdk`:
+4. Finish `@argus/sdk`:
    - typed public request/response contracts;
    - browser/server-safe client separation;
    - retries, timeouts, idempotency keys, streaming/polling support;
    - error classes and examples;
    - generated/reference API documentation.
-5. Finish the **SDK Showcase** as a separate Next.js 16 app that imports `@truthlayer/sdk` and uses an API key/environment configuration—no internal engine imports.
+5. Finish the **SDK Showcase** as a separate Next.js 16 app that imports `@argus/sdk` and uses an API key/environment configuration—no internal engine imports.
 6. Add end-to-end browser tests for a new user: sign in, ingest evidence, verify a claim, view cited result, create key, and run the showcase.
 
 ### Acceptance checks
@@ -242,14 +242,14 @@ The supplied SEP vectors are 8-dimensional synthetic inputs. They prove the trai
 | 1 | Phase 0 runtime and repo stabilization | All implementation and testing depends on it. |
 | 2 | Phase 1 supplied-dataset pipeline | Produces a testable artifact contract immediately. |
 | 3 | Phase 2 model registry | Prevents model/provider lock-in before real model work. |
-| 4 | Phase 3 signals and Phase 4 retrieval | Creates the core TruthLayer differentiation. |
+| 4 | Phase 3 signals and Phase 4 retrieval | Creates the core Argus differentiation. |
 | 5 | Phase 5 persistence/security | Makes core behavior usable by real organizations. |
 | 6 | Phase 6 product/SDK/showcase | Delivers the promised external experience. |
 | 7 | Phase 7 real benchmarks/release | Validates claims before calling the system production-ready. |
 
 ## Definition of done
 
-TruthLayer is complete when both Next.js 16 apps work against the same secured, Docker-runnable backend; the SDK is the sole integration path used by the showcase; every claim verdict carries evidence, calibrated uncertainty, model/artifact provenance, and bounded-agent trace; and the final metrics are generated from real, documented benchmarks rather than synthetic data.
+Argus is complete when both Next.js 16 apps work against the same secured, Docker-runnable backend; the SDK is the sole integration path used by the showcase; every claim verdict carries evidence, calibrated uncertainty, model/artifact provenance, and bounded-agent trace; and the final metrics are generated from real, documented benchmarks rather than synthetic data.
 
 ## Documentation deliverables
 
@@ -259,6 +259,6 @@ Update these documents alongside the relevant work; do not leave implementation 
 - `DEVELOPMENT_LOG.md` — dated implementation decisions and validation results.
 - `BACKEND.md` and `DATABASE.md` — API/data changes and migrations.
 - `SYNTHETIC_ARTIFACTS.md` — synthetic artifact boundaries and replacement status.
-- `TruthLayer_Model_Swap_Architecture.md` — active profiles/providers and compatibility matrix.
+- `Argus_Model_Swap_Architecture.md` — active profiles/providers and compatibility matrix.
 - `VISION_ALIGNMENT_AND_REMAINING_WORK.md` — phase completion status and any intentional changes to V1–V4.
 - `CODEBASE_INDEX.md` — update after structural changes.

@@ -1,13 +1,13 @@
 # AGENT_WORKFLOW_SPECIFICATION.md
 
-# TruthLayer Agent Workflow Specification
+# Argus Agent Workflow Specification
 
 **Version:** 1.0
 
 ## Purpose
 
 This document is the source of truth for the agent architecture used by
-TruthLayer. It defines how agents collaborate using **LangChain**,
+Argus. It defines how agents collaborate using **LangChain**,
 **LangGraph**, and **LangSmith** to perform real-time AI verification.
 
 ------------------------------------------------------------------------

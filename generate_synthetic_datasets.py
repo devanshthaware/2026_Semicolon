@@ -64,9 +64,9 @@ with (OUT_DIR / "sep_probe_training_data.csv").open("w", newline="") as f:
     writer.writerows(sep_rows)
 
 # 3. Generate Markdown Explanation
-md_content = """# TruthLayer Custom ML Models & Datasets
+md_content = """# Argus Custom ML Models & Datasets
 
-Yes, TruthLayer requires **three custom ML artifacts** to be trained before it can be considered production-ready. These are not massive Large Language Models; they are lightweight, targeted classifiers that sit *on top* of the LLM's outputs.
+Yes, Argus requires **three custom ML artifacts** to be trained before it can be considered production-ready. These are not massive Large Language Models; they are lightweight, targeted classifiers that sit *on top* of the LLM's outputs.
 
 ## 1. The Fusion Model (LightGBM/XGBoost)
 The Fusion model is the brain of the verification engine. Instead of relying on just one signal (like traditional RAG which only checks retrieval), the Fusion model looks at 5 different signals at once to decide if a claim is a hallucination.

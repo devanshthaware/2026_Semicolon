@@ -1,8 +1,8 @@
-# TruthLayer Codebase Index
+# Argus Codebase Index
 
 ## Repository purpose
 
-TruthLayer is an LLM-output verification platform with a public API, SDK, developer dashboard, separate showcase, verification engine, model/training pipeline, and infrastructure configuration.
+Argus is an LLM-output verification platform with a public API, SDK, developer dashboard, separate showcase, verification engine, model/training pipeline, and infrastructure configuration.
 
 ## Entry points
 
@@ -92,7 +92,7 @@ TruthLayer is an LLM-output verification platform with a public API, SDK, develo
 | `README.md` | Repository overview and local startup. |
 | `ARCHITECTURE.md` | Product boundaries and API architecture. |
 | `BACKEND.md` | V1–V4 verification-engine architecture. |
-| `TruthLayer_Model_Swap_Architecture.md` | Hardware/model-profile abstraction and swap rules. |
+| `Argus_Model_Swap_Architecture.md` | Hardware/model-profile abstraction and swap rules. |
 | `VISION_ALIGNMENT_AND_REMAINING_WORK.md` | Alignment with the V1–V4 vision and remaining implementation. |
 | `PROJECT_COMPLETION_PLAN.md` | Ordered completion milestones and acceptance criteria. |
 | `SYNTHETIC_ARTIFACTS.md` | Synthetic proof-artifact policy. |
@@ -103,7 +103,7 @@ TruthLayer is an LLM-output verification platform with a public API, SDK, develo
 
 - `apps/platform` and `apps/showcase` are earlier workspace implementations; `frontend/platform` is the richer current dashboard. Choose one canonical frontend structure before further feature work.
 - `frontend/showcase/showcase/**` duplicates `frontend/showcase/**`. Consolidate this nested duplicate after confirming which package is the active showcase.
-- Root scripts currently target workspace package names. Confirm each active frontend package declares the expected `@truthlayer/platform` / `@truthlayer/showcase` names.
+- Root scripts currently target workspace package names. Confirm each active frontend package declares the expected `@argus/platform` / `@argus/showcase` names.
 - Keep generated local runtimes (`.conda/`, Python virtual environments, Node modules, model caches, downloaded benchmarks) untracked as enforced by `.gitignore`.
 
 ## Canonical implementation path

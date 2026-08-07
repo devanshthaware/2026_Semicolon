@@ -1,6 +1,6 @@
 # 25_CI_CD.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 25 -- CI/CD Architecture
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter defines the Continuous Integration and Continuous
-Deployment (CI/CD) architecture for TruthLayer. It standardizes source
+Deployment (CI/CD) architecture for Argus. It standardizes source
 control, automated testing, container builds, security scanning,
 infrastructure deployment, model deployment, rollback, and release
 management.

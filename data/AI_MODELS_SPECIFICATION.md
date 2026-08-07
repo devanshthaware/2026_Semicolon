@@ -1,13 +1,13 @@
 # AI_MODELS_SPECIFICATION.md
 
-# TruthLayer AI Models Specification (Source of Truth)
+# Argus AI Models Specification (Source of Truth)
 
 Version: 1.0
 
 ## Purpose
 
 This document is the authoritative specification for all AI/ML models
-used by TruthLayer. It defines responsibilities, interfaces, datasets,
+used by Argus. It defines responsibilities, interfaces, datasets,
 training requirements, inputs, outputs, and roadmap.
 
 ## Model Registry

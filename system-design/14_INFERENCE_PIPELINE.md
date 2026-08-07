@@ -1,6 +1,6 @@
 # 14_INFERENCE_PIPELINE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 14 -- Inference Pipeline
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines how TruthLayer executes real-time inference after
+This chapter defines how Argus executes real-time inference after
 models have been trained. It describes request processing, model
 loading, verification execution, signal fusion, streaming, and response
 delivery.

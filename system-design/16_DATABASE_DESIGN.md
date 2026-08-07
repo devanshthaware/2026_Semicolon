@@ -1,6 +1,6 @@
 # 16_DATABASE_DESIGN.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 16 -- Database Design
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter defines the relational persistence architecture for
-TruthLayer. It describes the PostgreSQL schema, entity relationships,
+Argus. It describes the PostgreSQL schema, entity relationships,
 data ownership, lifecycle, and persistence strategy for users,
 verification sessions, receipts, analytics, and platform administration.
 

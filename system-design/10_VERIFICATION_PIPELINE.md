@@ -1,6 +1,6 @@
 # 10_VERIFICATION_PIPELINE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 10 -- Verification Pipeline
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter defines the complete end-to-end verification pipeline used
-by TruthLayer. It explains how a user request flows through the backend,
+by Argus. It explains how a user request flows through the backend,
 how verification signals are generated, merged, calibrated, and returned
 as a verified response.
 

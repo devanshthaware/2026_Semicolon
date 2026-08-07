@@ -1,6 +1,6 @@
 # 09_AGENT_SYSTEM.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 9 -- Agent System
 
@@ -11,7 +11,7 @@
 # Purpose
 
 This chapter specifies the verification agent architecture used by
-TruthLayer. Agents perform specialized verification tasks and
+Argus. Agents perform specialized verification tasks and
 collaborate through a shared `VerificationState` orchestrated by
 LangGraph.
 

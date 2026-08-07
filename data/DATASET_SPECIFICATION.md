@@ -1,6 +1,6 @@
 # DATASET_SPECIFICATION.md
 
-# TruthLayer Dataset Specification
+# Argus Dataset Specification
 
 ## Purpose
 

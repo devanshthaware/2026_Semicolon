@@ -1,6 +1,6 @@
 # 05_COMPONENT_ARCHITECTURE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 5 -- Component Architecture
 

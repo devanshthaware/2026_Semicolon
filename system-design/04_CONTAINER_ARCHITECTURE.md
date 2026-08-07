@@ -1,6 +1,6 @@
 # 04_CONTAINER_ARCHITECTURE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 4 -- Container Architecture
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter describes the **C4 Level 2 (Container)** architecture of
-TruthLayer. A container is a deployable application or data store with a
+Argus. A container is a deployable application or data store with a
 well-defined responsibility and interface.
 
 ------------------------------------------------------------------------

@@ -6,7 +6,7 @@ Excellent idea. Since you're targeting a **premium AI infrastructure product**, 
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│ TruthLayer                              Search                Notifications   Profile ▼     │
+│ Argus                              Search                Notifications   Profile ▼     │
 ├───────────────┬────────────────────────────────────────────────────────────────────────────┤
 │               │                                                                            │
 │  Overview     │                                                                            │
@@ -340,7 +340,7 @@ Admin
 
 Active
 
-TruthLayer
+Argus
 
 Today
 
@@ -463,7 +463,7 @@ If I had to choose the pages that will make the strongest impression during a de
 3. **System Health** – live infrastructure monitoring showing models, latency, queues, and system status.
 4. **Analytics** – usage, trust, latency, and model performance dashboards.
 
-These four pages showcase TruthLayer not just as an AI feature, but as a complete AI infrastructure platform.
+These four pages showcase Argus not just as an AI feature, but as a complete AI infrastructure platform.
 
 
 
@@ -474,7 +474,7 @@ These four pages showcase TruthLayer not just as an AI feature, but as a complet
 
 
 
-I would make the **SDK Showcase** feel like a company demonstrating how customers integrate TruthLayer into real products. Think **OpenAI Examples + Vercel Templates + Stripe Samples**.
+I would make the **SDK Showcase** feel like a company demonstrating how customers integrate Argus into real products. Think **OpenAI Examples + Vercel Templates + Stripe Samples**.
 
 ---
 
@@ -482,7 +482,7 @@ I would make the **SDK Showcase** feel like a company demonstrating how customer
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│ TruthLayer SDK Showcase                    Integrations     Docs      GitHub     Try SDK    │
+│ Argus SDK Showcase                    Integrations     Docs      GitHub     Try SDK    │
 ├────────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                            │
 │                         PAGE CONTENT                                                       │
@@ -496,7 +496,7 @@ I would make the **SDK Showcase** feel like a company demonstrating how customer
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ TruthLayer SDK Showcase                                         Get Started │
+│ Argus SDK Showcase                                         Get Started │
 ├──────────────────────────────────────────────────────────────────────────────┤
 
                      Build Trusted AI Applications
@@ -520,7 +520,7 @@ Application
 
 ↓
 
-TruthLayer SDK
+Argus SDK
 
 ↓
 
@@ -534,9 +534,9 @@ Verified Response
 
 Quick Install
 
-npm install truthlayer
+npm install argus
 
-pip install truthlayer
+pip install argus
 
 ```
 
@@ -600,7 +600,7 @@ SDK
 
 ↓
 
-TruthLayer
+Argus
 
 ↓
 
@@ -764,7 +764,7 @@ Code Editor
 
 ---------------------------------------------------------
 
-const client = new TruthLayer(API_KEY)
+const client = new Argus(API_KEY)
 
 const result = await client.verify(...)
 
@@ -803,7 +803,7 @@ REST API
 
 ↓
 
-TruthLayer Engine
+Argus Engine
 
 ↓
 
@@ -841,4 +841,4 @@ Instead of treating the **Healthcare**, **Legal**, and **Financial** assistants 
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-This reduces development effort while clearly demonstrating that **TruthLayer works across multiple industries with the same SDK**—which is exactly the message you want to convey to hackathon judges and potential users.
+This reduces development effort while clearly demonstrating that **Argus works across multiple industries with the same SDK**—which is exactly the message you want to convey to hackathon judges and potential users.

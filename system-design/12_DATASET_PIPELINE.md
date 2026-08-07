@@ -1,6 +1,6 @@
 # 12_DATASET_PIPELINE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 12 -- Dataset Pipeline
 
@@ -12,7 +12,7 @@
 # Purpose
 
 This chapter defines the dataset architecture used to train, validate,
-version, and maintain every custom AI model in TruthLayer. It describes
+version, and maintain every custom AI model in Argus. It describes
 the complete data lifecycle from collection through preprocessing,
 training, evaluation, and deployment.
 
@@ -20,7 +20,7 @@ training, evaluation, and deployment.
 
 # Dataset Philosophy
 
-TruthLayer datasets are designed to be:
+Argus datasets are designed to be:
 
 -   Versioned
 -   Reproducible

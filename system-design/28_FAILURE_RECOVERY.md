@@ -1,6 +1,6 @@
 # 28_FAILURE_RECOVERY.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 28 -- Failure Recovery & Resilience
 
@@ -10,7 +10,7 @@
 
 # Purpose
 
-This chapter defines how TruthLayer detects, isolates, recovers from,
+This chapter defines how Argus detects, isolates, recovers from,
 and learns from failures across the platform. It covers application
 failures, workflow recovery, infrastructure outages, data recovery,
 disaster recovery, and operational resilience.

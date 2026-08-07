@@ -1,6 +1,6 @@
 # 27_PERFORMANCE.md
 
-# TruthLayer System Design
+# Argus System Design
 
 ## Chapter 27 -- Performance Architecture
 
@@ -11,7 +11,7 @@
 
 # Purpose
 
-This chapter defines the performance architecture of TruthLayer. It
+This chapter defines the performance architecture of Argus. It
 documents how the platform achieves low latency, high throughput,
 predictable resource utilization, and consistent user experience while
 executing complex AI verification workflows.

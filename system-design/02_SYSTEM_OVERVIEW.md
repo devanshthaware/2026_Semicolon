@@ -1,6 +1,6 @@
 # 02_SYSTEM_OVERVIEW.md
 
-# TruthLayer System Overview
+# Argus System Overview
 
 **Version:** 1.0\
 **Status:** Source of Truth
@@ -9,7 +9,7 @@
 
 # Purpose
 
-This chapter provides a high-level overview of the TruthLayer platform,
+This chapter provides a high-level overview of the Argus platform,
 describing its major subsystems, architectural layers, responsibilities,
 and the end-to-end verification lifecycle.
 
@@ -17,7 +17,7 @@ and the end-to-end verification lifecycle.
 
 # Platform Overview
 
-TruthLayer is a verification platform that sits between an application
+Argus is a verification platform that sits between an application
 and a Large Language Model (LLM). It evaluates generated responses using
 multiple independent verification techniques before returning a
 calibrated trust score and verification receipt.
