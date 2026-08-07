@@ -1,142 +1,159 @@
-import { ArgusConfig } from "../configuration/index.js";
-import { AuthenticationProvider } from "../authentication/index.js";
-import { ArgusLogger } from "../logging/index.js";
-import { RateLimitError, ServerError, ConnectionError, TimeoutError } from "../exceptions/index.js";
+/**
+ * Middleware system for request/response processing
+ */
 
-export type FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+import { MiddlewareContext } from '../types/Common.js';
 
-export interface MiddlewareContext {
-  request: RequestInit;
-  url: string;
-  config: ArgusConfig;
+/**
+ * Middleware function type
+ */
+export type Middleware = (
+  context: MiddlewareContext,
+  next: () => Promise<void>
+) => Promise<void>;
+
+/**
+ * Authentication middleware
+ */
+export function authenticationMiddleware(apiKey?: string, bearerToken?: string): Middleware {
+  return async (context, next) => {
+    if (apiKey) {
+      context.request.headers['Authorization'] = `Bearer ${apiKey}`;
+    } else if (bearerToken) {
+      context.request.headers['Authorization'] = `Bearer ${bearerToken}`;
+    }
+    await next();
+  };
 }
 
-export interface Middleware {
-  /**
-   * Intercepts the request/response.
-   * @param context The middleware context
-   * @param next The next middleware or final fetch call in the chain
-   */
-  handle(context: MiddlewareContext, next: (ctx: MiddlewareContext) => Promise<Response>): Promise<Response>;
-}
-
-export class AuthenticationMiddleware implements Middleware {
-  constructor(private readonly provider: AuthenticationProvider) {}
-
-  async handle(context: MiddlewareContext, next: (ctx: MiddlewareContext) => Promise<Response>): Promise<Response> {
-    if (!context.request.headers) {
-      context.request.headers = {};
-    }
-    
-    // Create a new headers object to safely mutate
-    const headers = new Headers(context.request.headers);
-    const headersObj: Record<string, string> = {};
-    headers.forEach((value, key) => {
-      headersObj[key] = value;
-    });
-
-    this.provider.applyToHeaders(headersObj);
-    context.request.headers = headersObj;
-
-    return next(context);
-  }
-}
-
-export class LoggingMiddleware implements Middleware {
-  constructor(private readonly logger: ArgusLogger) {}
-
-  async handle(context: MiddlewareContext, next: (ctx: MiddlewareContext) => Promise<Response>): Promise<Response> {
-    const start = Date.now();
-    const method = context.request.method || "GET";
-    
-    this.logger.debug(`Sending ${method} request to ${context.url}`, {
-      headers: context.request.headers,
-      body: context.request.body ? "present" : "none"
-    });
-
-    try {
-      const response = await next(context);
-      const duration = Date.now() - start;
-      
-      this.logger.info(`${method} ${context.url} completed with status ${response.status} in ${duration}ms`);
-      
-      if (!response.ok) {
-        this.logger.warn(`Request failed with status ${response.status}`);
-      }
-      
-      return response;
-    } catch (error: any) {
-      const duration = Date.now() - start;
-      this.logger.error(`${method} ${context.url} failed after ${duration}ms`, error);
-      throw error;
-    }
-  }
-}
-
-export class RetryMiddleware implements Middleware {
-  constructor(
-    private readonly maxRetries: number,
-    private readonly baseDelay: number,
-    private readonly maxDelay: number,
-    private readonly logger: ArgusLogger
-  ) {}
-
-  private async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  private shouldRetry(error: any, response?: Response): boolean {
-    if (response) {
-      // Retry on Rate Limits or Server Errors (502, 503, 504)
-      return response.status === 429 || response.status === 502 || response.status === 503 || response.status === 504;
-    }
-    
-    if (error instanceof ConnectionError || error instanceof TimeoutError) {
-      return true;
-    }
-    
-    // Also catch typical fetch connection errors
-    if (error.name === 'FetchError' || error.message.includes('fetch') || error.message.includes('network') || error.message.includes('socket')) {
-      return true;
-    }
-    
-    return false;
-  }
-
-  async handle(context: MiddlewareContext, next: (ctx: MiddlewareContext) => Promise<Response>): Promise<Response> {
-    let attempt = 0;
-    
-    while (true) {
+/**
+ * Retry middleware with exponential backoff
+ */
+export function retryMiddleware(maxRetries = 3, baseDelay = 1000): Middleware {
+  return async (context, next) => {
+    for (let i = 0; i <= maxRetries; i++) {
+      context.attempt = i;
       try {
-        const response = await next(context);
-        
-        if (response.ok || !this.shouldRetry(null, response) || attempt >= this.maxRetries) {
-          if (!response.ok && response.status === 429) {
-             const retryAfter = response.headers.get("Retry-After");
-             throw new RateLimitError("Rate limit exceeded", retryAfter ? parseInt(retryAfter, 10) : undefined);
-          }
-          if (!response.ok && response.status >= 500) {
-             throw new ServerError(`Server Error: ${response.status}`, response.status);
-          }
-          return response;
-        }
-
-        this.logger.warn(`Received status ${response.status}. Retrying attempt ${attempt + 1}/${this.maxRetries}`);
-      } catch (error: any) {
-        if (!this.shouldRetry(error) || attempt >= this.maxRetries) {
+        await next();
+        return;
+      } catch (error) {
+        if (i === maxRetries) {
           throw error;
         }
-        this.logger.warn(`Request failed: ${error.message}. Retrying attempt ${attempt + 1}/${this.maxRetries}`);
+
+        // Don't retry on certain status codes
+        if (context.response?.status && [401, 403, 404, 422].includes(context.response.status)) {
+          throw error;
+        }
+
+        // Exponential backoff
+        const delay = baseDelay * Math.pow(2, i);
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
-      
-      // Calculate delay with exponential backoff and jitter
-      const exponentialDelay = this.baseDelay * Math.pow(2, attempt);
-      const delay = Math.min(exponentialDelay, this.maxDelay);
-      const jitter = Math.random() * 0.2 * delay; // 20% jitter
-      const finalDelay = delay + jitter;
-      
-      await this.sleep(finalDelay);
-      attempt++;
     }
-  }
+  };
+}
+
+/**
+ * Logging middleware
+ */
+export function loggingMiddleware(
+  onLog: (message: string, context: MiddlewareContext) => void
+): Middleware {
+  return async (context, next) => {
+    const startTime = Date.now();
+    onLog(`→ ${context.request.method} ${context.request.url}`, context);
+
+    try {
+      await next();
+      const duration = Date.now() - startTime;
+      if (context.response) {
+        onLog(
+          `← ${context.response.status} (${duration}ms) ${context.request.method} ${context.request.url}`,
+          context
+        );
+      }
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      onLog(`✗ ERROR (${duration}ms) ${context.request.method} ${context.request.url}`, context);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Timeout middleware
+ */
+export function timeoutMiddleware(timeout: number): Middleware {
+  return async (context, next) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      if (context.request && typeof context.request === 'object') {
+        (context.request as Record<string, unknown>).signal = controller.signal;
+      }
+      await next();
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  };
+}
+
+/**
+ * User agent middleware
+ */
+export function userAgentMiddleware(userAgent: string): Middleware {
+  return async (context, next) => {
+    context.request.headers['User-Agent'] = userAgent;
+    await next();
+  };
+}
+
+/**
+ * Custom header middleware
+ */
+export function headersMiddleware(headers: Record<string, string>): Middleware {
+  return async (context, next) => {
+    for (const [key, value] of Object.entries(headers)) {
+      context.request.headers[key] = value;
+    }
+    await next();
+  };
+}
+
+/**
+ * Content type middleware
+ */
+export function contentTypeMiddleware(): Middleware {
+  return async (context, next) => {
+    if (context.request.body && !context.request.headers['Content-Type']) {
+      context.request.headers['Content-Type'] = 'application/json';
+    }
+    await next();
+  };
+}
+
+/**
+ * Chain middleware functions together
+ */
+export function chainMiddleware(...middlewares: Middleware[]): Middleware {
+  return async (context, next) => {
+    let index = -1;
+
+    const dispatch = async (i: number): Promise<void> => {
+      if (i <= index) {
+        throw new Error('Middleware called next() multiple times');
+      }
+      index = i;
+
+      if (i < middlewares.length) {
+        await middlewares[i](context, () => dispatch(i + 1));
+      } else {
+        await next();
+      }
+    };
+
+    await dispatch(0);
+  };
 }
