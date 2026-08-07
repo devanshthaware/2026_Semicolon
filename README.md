@@ -6,31 +6,36 @@ This repository contains three separately deployable products:
 
 | Workspace | Purpose |
 | --- | --- |
-| `frontend/platform` | TruthLayer dashboard and public verification API |
-| `packages/sdk` | TypeScript SDK for the public API |
-| `frontend/showcase` | Consumer demo that uses only the SDK |
+| `frontend/platform` | TruthLayer dashboard and public verification API (`@truthlayer/platform`) |
+| `packages/sdk` | TypeScript SDK for the public API (`@truthlayer/sdk`) |
+| `frontend/showcase` | Consumer demo that uses only the SDK (`@truthlayer/showcase`) |
 
 ## Quick start
 
+### 1. Node.js & Next.js Workspaces
 ```powershell
-npm.cmd install
-npm.cmd run dev:platform
-# in another terminal
-npm.cmd run dev:showcase
+npm install
+npm run build
+npm run dev:platform   # Platform UI & API at http://localhost:3000
+npm run dev:showcase   # SDK Showcase at http://localhost:3001
 ```
 
-The platform runs at `http://localhost:3000`; the showcase runs at `http://localhost:3001`.
+### 2. Python Verification Engine Environment
+```powershell
+conda create -n truthlayer_env python=3.12 -y
+C:\Users\devan\miniconda3\envs\truthlayer_env\Scripts\pip.exe install -r services/verification-engine/requirements.txt pytest
+```
 
-To delegate the platform API to the FastAPI verification engine, run the `verification-engine` service described in [its README](services/verification-engine/README.md) and copy `frontend/platform/.env.example` to `frontend/platform/.env.local`.
+### 3. Services, Migration & Artifact Training
+```powershell
+docker compose up -d
+npm run db:generate
+npm run db:validate
+C:\Users\devan\miniconda3\envs\truthlayer_env\python.exe services/verification-engine/training/train_real_artifacts.py
+```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for system boundaries and [DEVELOPMENT_LOG.md](DEVELOPMENT_LOG.md) for the implementation record.
-
 Database and API-key setup is documented in [DATABASE.md](DATABASE.md).
-
 The complete V1–V4 backend implementation map and model deployment boundaries are in [BACKEND.md](BACKEND.md).
-
-The ordered end-to-end delivery roadmap is [PROJECT_COMPLETION_PLAN.md](PROJECT_COMPLETION_PLAN.md).
-
-Current implementation gaps, vision alignment, and the exact remaining integration sequence are in [VISION_ALIGNMENT_AND_REMAINING_WORK.md](VISION_ALIGNMENT_AND_REMAINING_WORK.md).
-
-Synthetic data, trained-on-synthetic proof artifacts, and the reproducibility notebook are documented in [SYNTHETIC_ARTIFACTS.md](SYNTHETIC_ARTIFACTS.md).
+The dependency-ordered implementation plan and V1–V4 release gates are in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+Synthetic data and trained proof artifacts are documented in [SYNTHETIC_ARTIFACTS.md](SYNTHETIC_ARTIFACTS.md).

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../../auth";
-import { db } from "../../../../../lib/db";
+import { db } from "../../../../lib/db";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -67,8 +67,12 @@ export async function POST(request: NextRequest) {
     }
 
     const engineData = await engineRes.json();
+
+    await db.documentChunk.createMany({
+      data: engineData.results.map((chunk: { vectorId: string; text: string }) => ({ documentId: document.id, vectorId: chunk.vectorId, text: chunk.text })),
+    });
     
-    // 5. Update Job Status
+    // 6. Update Job Status
     await db.ingestionJob.update({
       where: { id: job.id },
       data: { status: "completed" }

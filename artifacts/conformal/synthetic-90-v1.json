@@ -1,7 +1,0 @@
-{
-  "artifactType": "split-conformal",
-  "targetCoverage": 0.9,
-  "nonconformity_quantile": 0.61263,
-  "calibrationExamples": 120,
-  "warning": "Synthetic-only calibration. Not a production coverage guarantee."
-}

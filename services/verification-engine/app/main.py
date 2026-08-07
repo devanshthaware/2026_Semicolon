@@ -29,6 +29,6 @@ class IngestRequest(BaseModel):
 async def ingest(request: IngestRequest):
     try:
         results = ingest_document(request.document_id, request.text, request.source_name)
-        return {"chunks": len(results), "status": "success"}
+        return {"chunks": len(results), "results": results, "status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

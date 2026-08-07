@@ -1,6 +1,6 @@
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
-import { db } from "../../../../lib/db";
+import { db } from "../../../lib/db";
 import IngestForm from "./IngestForm";
 
 export default async function EvidencePage() {

@@ -29,6 +29,8 @@ services:
       FUSION_MODEL_PATH: /artifacts/fusion/synthetic-logistic-v1.json
       CONFORMAL_CALIBRATION_PATH: /artifacts/conformal/synthetic-90-v1.json
       SEP_PROBE_PATH: /artifacts/sep/synthetic-linear-probe-v1.json
+      GENERATION_MODEL: Qwen/Qwen2.5-3B-Instruct
+      MODEL_PROFILE: laptop
     ports:
       - "8000:8000"
     depends_on:

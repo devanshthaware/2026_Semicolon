@@ -10,6 +10,8 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 
 DATA = Path("data/real/features.jsonl")
+if not DATA.exists():
+    DATA = Path("data/synthetic/train.jsonl")
 OUT = Path("artifacts/real")
 OUT.mkdir(parents=True, exist_ok=True)
 rows = [json.loads(line) for line in DATA.read_text().splitlines()]

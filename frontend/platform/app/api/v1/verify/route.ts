@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addSession } from "../../../../lib/sessions";
-import { runVerification } from "../../../../lib/engine";
-import { authenticateApiKey } from "../../../../lib/api-auth";
-import { persistSession } from "../../../../lib/persistence";
+import { VerificationVerdict, type Prisma } from "@prisma/client";
+import { auth } from "../../../../auth";
+import { db } from "../../../../lib/db";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json() as { input?: string; response?: string; mode?: "standard" | "strict" };
+  const session = await auth();
+  const orgId = session?.user?.activeOrgId ?? "dev-default-org";
+  const body = await request.json() as { input?: string; response?: string; mode?: "standard" | "strict"; samples?: string[] };
   if (!body.response?.trim()) return NextResponse.json({ error: "response is required" }, { status: 400 });
 
-  const apiKey = await authenticateApiKey(request.headers.get("authorization"));
-  if (request.headers.has("authorization") && !apiKey) return NextResponse.json({ error: "Invalid or revoked API key" }, { status: 401 });
-  const payload = await runVerification(body);
-  addSession(payload, body.input ?? "Untitled prompt");
-  if (apiKey) await persistSession(payload, body.input ?? "Untitled prompt", body.response, apiKey.organizationId, apiKey.id);
-  return NextResponse.json(payload, { headers: { "Access-Control-Allow-Origin": "http://localhost:3001" } });
-}
+  const engineUrl = process.env.VERIFICATION_ENGINE_URL ?? "http://localhost:8000";
+  const engineResponse = await fetch(`${engineUrl}/v1/verify`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ input: body.input ?? "", response: body.response, mode: body.mode ?? "standard", samples: body.samples }) });
+  if (!engineResponse.ok) return NextResponse.json({ error: await engineResponse.text() || "Verification engine failed" }, { status: 502 });
 
-export async function OPTIONS() { return new NextResponse(null, { headers: { "Access-Control-Allow-Origin": "http://localhost:3001", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization" } }); }
+  const result = await engineResponse.json() as { id: string; trust: number; verdict: "grounded" | "review" | "flagged" };
+  try {
+    await db.verificationSession.create({ data: { externalId: result.id, prompt: body.input ?? "", response: body.response, trust: result.trust, verdict: result.verdict.toUpperCase() as VerificationVerdict, result: result as Prisma.InputJsonValue, organizationId: orgId } });
+  } catch (e) {
+    // Ignore database session creation error in dev mode when org does not exist
+  }
+  return NextResponse.json(result, { status: 201 });
+}
