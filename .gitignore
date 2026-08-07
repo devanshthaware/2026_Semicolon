@@ -51,7 +51,7 @@ checkpoints/
 models/
 artifacts/real/
 artifacts/**/*.joblib
-artifacts/**/*.pt
+!artifacts/**/*.pt
 artifacts/**/*.pth
 artifacts/**/*.bin
 artifacts/**/*.safetensors
