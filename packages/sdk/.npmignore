@@ -1,0 +1,14 @@
+src/
+examples/
+tests/
+.eslintrc.json
+.prettierrc.json
+tsconfig.json
+vitest.config.ts
+tsup.config.ts
+.gitignore
+CHANGELOG.md
+*.test.ts
+*.spec.ts
+.nyc_output/
+coverage/
