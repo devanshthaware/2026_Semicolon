@@ -5,6 +5,6 @@ export async function listSessions(organizationId?: string) {
     where: organizationId ? { organizationId } : undefined,
     orderBy: { createdAt: "desc" },
     take: 50,
-    select: { externalId: true, prompt: true, trust: true, verdict: true, createdAt: true }
+    select: { id: true, externalId: true, prompt: true, trust: true, verdict: true, createdAt: true, result: true }
   });
 }

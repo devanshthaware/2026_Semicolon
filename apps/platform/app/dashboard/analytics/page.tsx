@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,21 +14,32 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts'
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '@/services/api-client'
 import { Loader2 } from 'lucide-react'
 
-const COLORS = ['#0f172a', '#1e293b', '#64748b', '#cbd5e1']
-
 export default function AnalyticsPage() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['analytics'],
-    queryFn: () => apiClient.get('/analytics')
+  const [range, setRange] = useState<'7d' | '30d' | '90d'>('7d')
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['analytics', range],
+    queryFn: () => apiClient.get(`/analytics?range=${range}`)
   })
+
+  const summary = data?.summary || {
+    totalVerifications: 0,
+    verified: 0,
+    warnings: 0,
+    failed: 0,
+    averageTrustScore: 0,
+    averageLatencyMs: 0,
+    claimsChecked: 0,
+    corrections: 0
+  }
+
+  const timeseries = data?.timeseries || []
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -39,105 +50,99 @@ export default function AnalyticsPage() {
             <p className="text-muted-foreground">View usage and performance metrics</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">7 Days</Button>
-            <Button variant="outline">30 Days</Button>
-            <Button>90 Days</Button>
+            <Button variant={range === '7d' ? 'default' : 'outline'} onClick={() => setRange('7d')}>7 Days</Button>
+            <Button variant={range === '30d' ? 'default' : 'outline'} onClick={() => setRange('30d')}>30 Days</Button>
+            <Button variant={range === '90d' ? 'default' : 'outline'} onClick={() => setRange('90d')}>90 Days</Button>
           </div>
         </div>
 
-        {/* Main Charts */}
+        {/* Content */}
         {isLoading ? (
           <div className="flex justify-center py-16">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
-        ) : isError || !data ? (
+        ) : isError ? (
           <div className="text-center py-16 text-destructive">
-            Failed to load analytics data.
+            Unable to load analytics data.
+            <Button variant="outline" size="sm" onClick={() => refetch()} className="ml-4">
+              Retry
+            </Button>
           </div>
         ) : (
           <>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card>
+                <CardHeader className="py-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Verifications</CardTitle>
+                </CardHeader>
+                <CardContent className="py-2">
+                  <div className="text-2xl font-bold">{summary.totalVerifications}</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="py-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Average Trust</CardTitle>
+                </CardHeader>
+                <CardContent className="py-2">
+                  <div className="text-2xl font-bold">{Math.round(summary.averageTrustScore * 100)}%</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="py-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Claims Checked</CardTitle>
+                </CardHeader>
+                <CardContent className="py-2">
+                  <div className="text-2xl font-bold">{summary.claimsChecked}</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="py-3">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Corrections</CardTitle>
+                </CardHeader>
+                <CardContent className="py-2">
+                  <div className="text-2xl font-bold">{summary.corrections}</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Charts */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Requests */}
+              {/* Verification Volume */}
               <Card>
                 <CardHeader>
-                  <CardTitle>API Requests</CardTitle>
+                  <CardTitle>Verification Volume</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={data.requestsData || []}>
+                    <LineChart data={timeseries}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                       <XAxis dataKey="date" stroke="var(--muted-foreground)" />
                       <YAxis stroke="var(--muted-foreground)" />
                       <Tooltip />
-                      <Line type="monotone" dataKey="count" stroke="var(--primary)" dot={false} />
+                      <Line type="monotone" dataKey="verifications" stroke="var(--primary)" strokeWidth={2} dot={false} />
                     </LineChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
 
-              {/* Trust Score Distribution */}
+              {/* Trust Score Trend */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Trust Score Distribution</CardTitle>
+                  <CardTitle>Trust Score Trend (%)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={data.trustScoreData || []}>
+                    <BarChart data={timeseries}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                      <XAxis dataKey="score" stroke="var(--muted-foreground)" />
-                      <YAxis stroke="var(--muted-foreground)" />
+                      <XAxis dataKey="date" stroke="var(--muted-foreground)" />
+                      <YAxis stroke="var(--muted-foreground)" domain={[0, 100]} />
                       <Tooltip />
-                      <Bar dataKey="count" fill="var(--primary)" radius={[8, 8, 0, 0]} />
+                      <Bar dataKey="trustScore" fill="var(--primary)" radius={[8, 8, 0, 0]} />
                     </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Secondary Charts */}
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Latency */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Latency Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={data.latencyData || []}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                      <XAxis dataKey="ms" stroke="var(--muted-foreground)" />
-                      <YAxis stroke="var(--muted-foreground)" />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="var(--primary)" radius={[8, 8, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Model Usage */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Model Usage</CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={data.modelUsage || []}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, value }) => `${name}: ${value}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {(data.modelUsage || []).map((entry: any, index: number) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>

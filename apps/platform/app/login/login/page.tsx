@@ -21,7 +21,7 @@ export default function LoginPage() {
       }
       const outcome = await signIn("credentials", { email, password, redirect: false });
       if (outcome?.error) throw new Error("Invalid email or password");
-      window.location.assign("/");
+      window.location.assign("/dashboard");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Unable to continue"); } finally { setLoading(false); }
   }
 

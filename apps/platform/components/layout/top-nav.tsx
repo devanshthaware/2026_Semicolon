@@ -74,7 +74,7 @@ export function TopNav() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </DropdownMenuItem>
