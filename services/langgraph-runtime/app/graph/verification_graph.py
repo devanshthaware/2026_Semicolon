@@ -81,7 +81,7 @@ class RealtimeVerificationEngine:
 
         await emit("response.completed", {"full_text": generated_text})
 
-        # 3. Claim Extraction
+        # 3. Claim Extraction & Classification
         await emit("claim.extraction.started", {})
         extracted_texts = extract_claims(generated_text)
         claims = []
@@ -97,10 +97,21 @@ class RealtimeVerificationEngine:
             elif any(w in clean_text for w in ["in 20", "in 19", "yesterday", "current", "date", "stale"]):
                 claim_type = "time-sensitive"
 
+            # Determine cost-aware routing
+            if claim_type == "numeric" and "symbolic" not in ablated:
+                routing = ["Python Arithmetic Engine"]
+            elif claim_type == "logical" and "symbolic" not in ablated:
+                routing = ["Z3 Logic Solver"]
+            elif claim_type == "time-sensitive" and "temporal" not in ablated:
+                routing = ["Hybrid Retrieval", "DeBERTa NLI", "Temporal Check"]
+            else:
+                routing = ["Hybrid Retrieval", "DeBERTa NLI"]
+
             claim_obj = {
                 "id": claim_id,
                 "text": text,
                 "type": claim_type,
+                "routing": routing,
                 "verdict": "UNVERIFIED"
             }
             claims.append(claim_obj)
@@ -109,7 +120,7 @@ class RealtimeVerificationEngine:
         await emit("claim.extraction.completed", {"count": len(claims)})
 
         # 4. Routing & Verification per Claim
-        await emit("routing.started", {})
+        await emit("routing.started", {"claims_count": len(claims)})
         claim_results = []
         total_trust_scores = []
         corrections = []
@@ -119,7 +130,7 @@ class RealtimeVerificationEngine:
             text = c["text"]
             ctype = c["type"]
 
-            await emit("layer.started", {"claim_id": cid, "type": ctype})
+            await emit("layer.started", {"claim_id": cid, "type": ctype, "routing": c.get("routing", [])})
 
             # Check Numeric/Logical path
             if ctype == "numeric" and "symbolic" not in ablated:
@@ -127,18 +138,38 @@ class RealtimeVerificationEngine:
                 verdict_str = "GROUNDED" if is_valid else "CONTRADICTED"
                 trust_val = 0.98 if is_valid else 0.15
                 
+                evidence_obj = {
+                    "source": "Python Arithmetic Engine",
+                    "snippet": msg,
+                    "relation": "entails" if is_valid else "contradicts",
+                    "score": 1.0
+                }
                 res_obj = {
                     "id": cid,
                     "text": text,
                     "type": ctype,
                     "verdict": verdict_str,
                     "trust": trust_val,
-                    "evidence": [{"source": "Python Arithmetic Engine", "snippet": msg, "relation": "entails" if is_valid else "contradicts", "score": 1.0}],
-                    "diagnostics": {"symbolic": 1.0 if is_valid else 0.0}
+                    "evidence": [evidence_obj],
+                    "signals": {
+                        "retrieval": "SKIPPED",
+                        "nli": "SKIPPED",
+                        "symbolic": verdict_str,
+                        "temporal": "SKIPPED"
+                    },
+                    "diagnostics": {"symbolic": 1.0 if is_valid else 0.0, "details": msg}
                 }
                 claim_results.append(res_obj)
                 total_trust_scores.append(trust_val)
-                await emit("layer.completed", {"claim_id": cid, "layer": "symbolic", "status": verdict_str, "details": msg})
+                await emit("layer.completed", {
+                    "claim_id": cid, 
+                    "layer": "symbolic", 
+                    "status": verdict_str, 
+                    "details": msg,
+                    "trust": trust_val,
+                    "evidence": [evidence_obj],
+                    "signals": res_obj["signals"]
+                })
 
                 # Check if correction needed
                 if not is_valid:
@@ -152,76 +183,145 @@ class RealtimeVerificationEngine:
                         c_trust = 0.92 if c_valid else 0.40
                         
                         corr_entry = {
+                            "claim_id": cid,
+                            "attempt": 1,
                             "original_claim": text,
+                            "reason": "Arithmetic contradiction detected by Symbolic Engine",
                             "corrected_claim": corrected_text,
                             "verdict": c_verdict,
                             "trust": c_trust
                         }
                         corrections.append(corr_entry)
                         await emit("correction.completed", corr_entry)
-                        await emit("reverification.completed", {"claim_id": cid, "verdict": c_verdict, "trust": c_trust})
+                        await emit("reverification.completed", {"claim_id": cid, "verdict": c_verdict, "trust": c_trust, "corrected_text": corrected_text})
                     except Exception as cex:
-                        await emit("correction.completed", {"error": str(cex)})
+                        await emit("correction.completed", {"claim_id": cid, "error": str(cex)})
 
             elif ctype == "logical" and "symbolic" not in ablated:
                 is_valid, msg, grounding = self.logic_agent.evaluate_logic(text)
                 verdict_str = "GROUNDED" if is_valid else "FLAGGED"
                 trust_val = 0.90 if is_valid else 0.20
+                evidence_obj = {
+                    "source": "Z3 Logic Solver",
+                    "snippet": msg,
+                    "relation": "entails" if is_valid else "contradicts",
+                    "score": 0.9
+                }
                 res_obj = {
                     "id": cid,
                     "text": text,
                     "type": ctype,
                     "verdict": verdict_str,
                     "trust": trust_val,
-                    "evidence": [{"source": "Z3 Solver", "snippet": msg, "relation": "entails" if is_valid else "contradicts", "score": 0.9}],
-                    "diagnostics": {"z3": 1.0 if is_valid else 0.0}
+                    "evidence": [evidence_obj],
+                    "signals": {
+                        "retrieval": "SKIPPED",
+                        "nli": "SKIPPED",
+                        "symbolic": verdict_str,
+                        "temporal": "SKIPPED"
+                    },
+                    "diagnostics": {"z3": 1.0 if is_valid else 0.0, "details": msg}
                 }
                 claim_results.append(res_obj)
                 total_trust_scores.append(trust_val)
-                await emit("layer.completed", {"claim_id": cid, "layer": "z3_logic", "status": verdict_str, "details": msg})
+                await emit("layer.completed", {
+                    "claim_id": cid,
+                    "layer": "z3_logic",
+                    "status": verdict_str,
+                    "details": msg,
+                    "trust": trust_val,
+                    "evidence": [evidence_obj],
+                    "signals": res_obj["signals"]
+                })
 
             else:
-                # Factual verification path (Retrieval + NLI)
+                # Factual / Time-sensitive verification path (Retrieval + NLI)
                 await emit("retrieval.started", {"claim_id": cid})
                 agent_res = await asyncio.to_thread(self.evidence_agent.retrieve, text)
                 passages = agent_res.passages
                 best = passages[0] if passages else None
                 
                 if best and best.score > 0.3:
-                    await emit("retrieval.completed", {"claim_id": cid, "source": best.source, "snippet": best.text, "score": round(best.score, 3)})
+                    await emit("retrieval.completed", {
+                        "claim_id": cid,
+                        "source": best.source,
+                        "snippet": best.text,
+                        "score": round(best.score, 3)
+                    })
                     nli_res = await asyncio.to_thread(self.nli.assess, text, best.text, best.score)
-                    await emit("nli.completed", {"claim_id": cid, "relation": nli_res.relation, "confidence": round(nli_res.confidence, 3)})
+                    await emit("nli.completed", {
+                        "claim_id": cid,
+                        "relation": nli_res.relation,
+                        "confidence": round(nli_res.confidence, 3)
+                    })
                     
                     grounding = nli_res.confidence if nli_res.relation == "entails" else 1.0 - nli_res.confidence if nli_res.relation == "contradicts" else 0.5
                     verdict_str = "GROUNDED" if nli_res.relation == "entails" else "CONTRADICTED" if nli_res.relation == "contradicts" else "REVIEW"
                     trust_val = round(self.fusion.predict({"sep": self.sep.score(), "semantic": 0.8, "kernel": 0.8, "grounding": grounding, "retrieval": best.score}), 3)
                     
+                    evidence_obj = {
+                        "source": best.source,
+                        "snippet": best.text,
+                        "relation": nli_res.relation,
+                        "score": round(best.score, 3),
+                        "nli_confidence": round(nli_res.confidence, 3)
+                    }
                     res_obj = {
                         "id": cid,
                         "text": text,
                         "type": ctype,
                         "verdict": verdict_str,
                         "trust": trust_val,
-                        "evidence": [{"source": best.source, "snippet": best.text, "relation": nli_res.relation, "score": round(best.score, 3)}],
+                        "evidence": [evidence_obj],
+                        "signals": {
+                            "retrieval": "EVIDENCE_FOUND",
+                            "nli": nli_res.relation.upper(),
+                            "symbolic": "SKIPPED",
+                            "temporal": "SKIPPED" if ctype != "time-sensitive" else "STALENESS_UNKNOWN"
+                        },
                         "diagnostics": {"grounding": grounding, "retrieval": best.score}
                     }
                 else:
-                    await emit("retrieval.completed", {"claim_id": cid, "source": "None", "snippet": "No relevant indexed evidence found.", "score": 0.0})
+                    await emit("retrieval.completed", {
+                        "claim_id": cid,
+                        "source": "Indexed Corpus",
+                        "snippet": "No relevant indexed evidence found.",
+                        "score": 0.0
+                    })
                     verdict_str = "REVIEW"
                     trust_val = 0.50
+                    evidence_obj = {
+                        "source": "Indexed Corpus",
+                        "snippet": "No relevant evidence found in vector/BM25 index.",
+                        "relation": "neutral",
+                        "score": 0.0
+                    }
                     res_obj = {
                         "id": cid,
                         "text": text,
                         "type": ctype,
                         "verdict": verdict_str,
                         "trust": trust_val,
-                        "evidence": [{"source": "Indexed Corpus", "snippet": "No relevant evidence indexed.", "relation": "neutral", "score": 0.0}],
+                        "evidence": [evidence_obj],
+                        "signals": {
+                            "retrieval": "NO_EVIDENCE",
+                            "nli": "NEUTRAL",
+                            "symbolic": "SKIPPED",
+                            "temporal": "SKIPPED"
+                        },
                         "diagnostics": {"grounding": 0.5, "retrieval": 0.0}
                     }
 
                 claim_results.append(res_obj)
                 total_trust_scores.append(trust_val)
-                await emit("layer.completed", {"claim_id": cid, "layer": "retrieval_nli", "status": verdict_str, "trust": trust_val})
+                await emit("layer.completed", {
+                    "claim_id": cid,
+                    "layer": "retrieval_nli",
+                    "status": verdict_str,
+                    "trust": trust_val,
+                    "evidence": [evidence_obj],
+                    "signals": res_obj["signals"]
+                })
 
         # 5. Overall Fusion & Calibration
         await emit("fusion.started", {})

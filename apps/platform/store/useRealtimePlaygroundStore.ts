@@ -13,9 +13,20 @@ export interface ClaimItem {
   id: string;
   text: string;
   type: string;
+  routing?: string[];
   verdict: string;
   trust?: number;
   evidence?: any[];
+  signals?: {
+    retrieval?: string;
+    nli?: string;
+    symbolic?: string;
+    temporal?: string;
+    critic?: string;
+    cross_model?: string;
+    semantic?: string;
+  };
+  diagnostics?: any;
 }
 
 interface RealtimePlaygroundStore {
@@ -31,6 +42,7 @@ interface RealtimePlaygroundStore {
   prompt: string;
   responseText: string;
   claims: ClaimItem[];
+  selectedClaimId: string | null;
   ablatedLayers: string[];
   trustScore: number | null;
   receipt: any | null;
@@ -40,6 +52,7 @@ interface RealtimePlaygroundStore {
   
   // Actions
   setExecutionMode: (mode: ExecutionMode) => void;
+  setSelectedClaimId: (id: string | null) => void;
   toggleAblation: (layerId: string) => void;
   checkOllamaHealth: () => Promise<void>;
   runVerification: (inputPrompt: string) => Promise<void>;
@@ -60,6 +73,7 @@ export const useRealtimePlaygroundStore = create<RealtimePlaygroundStore>((set, 
   prompt: '',
   responseText: '',
   claims: [],
+  selectedClaimId: null,
   ablatedLayers: [],
   trustScore: null,
   receipt: null,
@@ -68,6 +82,8 @@ export const useRealtimePlaygroundStore = create<RealtimePlaygroundStore>((set, 
   errorMessage: null,
 
   setExecutionMode: (mode) => set({ executionMode: mode }),
+
+  setSelectedClaimId: (id) => set({ selectedClaimId: id }),
 
   toggleAblation: (layerId) => {
     const current = get().ablatedLayers;
@@ -106,6 +122,7 @@ export const useRealtimePlaygroundStore = create<RealtimePlaygroundStore>((set, 
       prompt: inputPrompt,
       responseText: '',
       claims: [],
+      selectedClaimId: null,
       trustScore: null,
       receipt: null,
       corrections: [],
@@ -165,13 +182,17 @@ export const useRealtimePlaygroundStore = create<RealtimePlaygroundStore>((set, 
             set(state => {
               const exists = state.claims.some(c => c.id === payload.id);
               if (exists) return state;
+              const newClaims = [...state.claims, {
+                id: payload.id,
+                text: payload.text,
+                type: payload.type || 'factual',
+                routing: payload.routing || [],
+                verdict: 'UNVERIFIED'
+              }];
               return {
-                claims: [...state.claims, {
-                  id: payload.id,
-                  text: payload.text,
-                  type: payload.type || 'factual',
-                  verdict: 'UNVERIFIED'
-                }]
+                claims: newClaims,
+                // Automatically select first extracted claim if none is selected yet
+                selectedClaimId: state.selectedClaimId || payload.id
               };
             });
             break;
@@ -184,7 +205,13 @@ export const useRealtimePlaygroundStore = create<RealtimePlaygroundStore>((set, 
             set(state => ({
               claims: state.claims.map(c => 
                 c.id === payload.claim_id
-                  ? { ...c, verdict: payload.status, trust: payload.trust }
+                  ? { 
+                      ...c, 
+                      verdict: payload.status, 
+                      trust: payload.trust,
+                      evidence: payload.evidence || c.evidence,
+                      signals: payload.signals || c.signals
+                    }
                   : c
               )
             }));
@@ -278,6 +305,7 @@ export const useRealtimePlaygroundStore = create<RealtimePlaygroundStore>((set, 
       prompt: '',
       responseText: '',
       claims: [],
+      selectedClaimId: null,
       trustScore: null,
       receipt: null,
       corrections: [],
