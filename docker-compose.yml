@@ -30,10 +30,13 @@ services:
       dockerfile: services/api-gateway/Dockerfile
     environment:
       LANGGRAPH_URL: http://langgraph-runtime:8000
+      LANGGRAPH_WS_URL: ws://langgraph-runtime:8000
     ports:
       - "8000:8000"
     depends_on:
       - langgraph-runtime
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   langgraph-runtime:
     build:
@@ -43,10 +46,13 @@ services:
       MODEL_SERVICE_URL: http://model-service:8001
       RETRIEVAL_SERVICE_URL: http://retrieval-service:8002
       REDIS_URL: redis://redis:6379
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
     depends_on:
       - model-service
       - retrieval-service
       - redis
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   model-service:
     build:
