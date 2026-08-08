@@ -60,6 +60,8 @@ services:
       SEP_PROBE_PATH: /artifacts/sep_model.pt
     ports:
       - "8001:8001"
+    volumes:
+      - hf_cache:/root/.cache/huggingface
 
   retrieval-service:
     build:
@@ -72,8 +74,11 @@ services:
       - "8002:8002"
     depends_on:
       - qdrant
+    volumes:
+      - hf_cache:/root/.cache/huggingface
 
 volumes:
   postgres_data:
   qdrant_data:
   redis_data:
+  hf_cache:

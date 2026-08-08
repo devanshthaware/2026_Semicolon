@@ -6,7 +6,7 @@ import { Sidebar } from './sidebar'
 import { TopNav } from './top-nav'
 import { Button } from '@/components/ui/button'
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export function DashboardLayout({ children, fullWidth = false }: { children: React.ReactNode, fullWidth?: boolean }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
@@ -45,7 +45,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto">
-          <div className="container max-w-7xl py-6 px-4 lg:py-8 lg:px-6">
+          <div className={`${fullWidth ? 'w-full h-full' : 'container max-w-7xl py-6 px-4 lg:py-8 lg:px-6'}`}>
             {children}
           </div>
         </main>

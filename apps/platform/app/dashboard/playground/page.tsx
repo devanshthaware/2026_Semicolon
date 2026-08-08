@@ -2,111 +2,134 @@
 
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-
-// Stores & Hooks
 import { useVerificationStream } from '@/hooks/useVerificationStream';
 import { useStreamingStore } from '@/store/useStreamingStore';
 
-// Visualizations
-import { TrustGauge } from '@/components/visualizations/TrustGauge';
-import { AgentTimeline } from '@/components/visualizations/AgentTimeline';
-import { ClaimTree } from '@/components/visualizations/ClaimTree';
-import { EvidenceViewer } from '@/components/visualizations/EvidenceViewer';
+// Placeholders for modular sections
+import { Section1_PromptEditor } from '@/components/playground/Section1_PromptEditor';
+import { Section2_StreamingResponse } from '@/components/playground/Section2_StreamingResponse';
+import { Section3_VerificationPipeline } from '@/components/playground/Section3_VerificationPipeline';
+import { Section4_ExecutionGraph } from '@/components/playground/Section4_ExecutionGraph';
+import { Section5_StateInspector } from '@/components/playground/Section5_StateInspector';
+import { Section6_ClaimExtraction } from '@/components/playground/Section6_ClaimExtraction';
+import { Section7_ClaimDependency } from '@/components/playground/Section7_ClaimDependency';
+import { Section8_RetrievalPipeline } from '@/components/playground/Section8_RetrievalPipeline';
+import { Section9_EvidenceViewer } from '@/components/playground/Section9_EvidenceViewer';
+import { Section10_SemanticProbe } from '@/components/playground/Section10_SemanticProbe';
+import { Section11_CrossModelAgreement } from '@/components/playground/Section11_CrossModelAgreement';
+import { Section12_SymbolicVerification } from '@/components/playground/Section12_SymbolicVerification';
+import { Section13_TemporalVerification } from '@/components/playground/Section13_TemporalVerification';
+import { Section14_SignalFusion } from '@/components/playground/Section14_SignalFusion';
+import { Section15_TrustCalibration } from '@/components/playground/Section15_TrustCalibration';
+import { Section16_TrustDashboard } from '@/components/playground/Section16_TrustDashboard';
+import { Section17_AgentTimeline } from '@/components/playground/Section17_AgentTimeline';
+import { Section18_PerformanceCharts } from '@/components/playground/Section18_PerformanceCharts';
+import { Section19_LangSmithTrace } from '@/components/playground/Section19_LangSmithTrace';
+import { Section20_LiveLogs } from '@/components/playground/Section20_LiveLogs';
+import { Section21_VerificationReceipt } from '@/components/playground/Section21_VerificationReceipt';
+import { Section22_DeveloperTools } from '@/components/playground/Section22_DeveloperTools';
+import { RightSidePanel } from '@/components/playground/RightSidePanel';
+import { BottomHealthPanel } from '@/components/playground/BottomHealthPanel';
 
 export default function PlaygroundPage() {
   const [prompt, setPrompt] = useState('');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
-  // Hook connects to SSE stream automatically when activeSessionId is set
-  useVerificationStream(activeSessionId);
-
-  const { isStreaming, currentTokens, trustScore, claims, agents, events, resetStream } = useStreamingStore();
+  useVerificationStream(activeSessionId, prompt);
+  const { isStreaming, resetStream } = useStreamingStore();
 
   const handleVerify = () => {
     resetStream();
-    // In a full implementation, this would POST to the backend to create a session
-    // and then set the activeSessionId to the returned ID to begin SSE.
-    // For now, we simulate starting a session with a unique ID:
-    const mockSessionId = 'session_' + Date.now();
-    setActiveSessionId(mockSessionId);
+    setActiveSessionId('session_' + Date.now());
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Verification Playground</h1>
-          <p className="text-muted-foreground">Test the real-time LLM verification pipeline.</p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Left Column: Input & Live Output */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Prompt</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Textarea
-                  placeholder="Enter a statement or claim to verify..."
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  className="min-h-32 resize-none"
-                  disabled={isStreaming}
-                />
-                <Button onClick={handleVerify} disabled={!prompt || isStreaming} className="w-full">
-                  {isStreaming ? 'Verifying in Real-time...' : 'Run Verification'}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="flex-1">
-              <CardHeader>
-                <CardTitle>Streaming Output</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="min-h-64 rounded-lg border border-border bg-muted p-4 text-sm relative">
-                  {isStreaming && !currentTokens && (
-                     <div className="flex items-center justify-center h-full absolute inset-0">
-                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                     </div>
-                  )}
-                  {currentTokens ? (
-                    <p className="text-foreground whitespace-pre-wrap">{currentTokens}</p>
-                  ) : (
-                    !isStreaming && <p className="text-muted-foreground">LLM response tokens will stream here...</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Column: Key Visualizations */}
-          <div className="space-y-6">
-            <TrustGauge score={trustScore} />
-            <AgentTimeline activities={agents} />
-          </div>
-        </div>
-
-        {/* Bottom Panel: Claims & Evidence */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <ClaimTree claims={claims} />
+    <DashboardLayout fullWidth={true}>
+      <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden bg-background">
+        
+        {/* Main Content Area - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-8 relative">
           
-          {/* Since we don't have distinct retrieved evidence in the store yet, we map events loosely for now */}
-          <EvidenceViewer 
-            evidence={events
-              .filter(e => e.type === 'retrieval')
-              .map((e, idx) => ({
-                id: String(idx),
-                source: e.payload.source || 'Unknown Source',
-                content: e.payload.snippet || 'Retrieved context snippet...',
-                relevanceScore: e.payload.score || 0.0
-              }))} 
-          />
+          <div className="flex justify-between items-end">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">Verification Playground</h1>
+              <p className="text-muted-foreground mt-1">Real-time AI Verification Operating System.</p>
+            </div>
+            <Section22_DeveloperTools />
+          </div>
+
+          <div className="grid grid-cols-12 gap-6">
+            
+            {/* Left/Center Column (Span 9) */}
+            <div className="col-span-12 xl:col-span-9 space-y-6">
+              
+              {/* Top Row: Input, Streaming Output, Metrics */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-1 space-y-6">
+                  <Section1_PromptEditor prompt={prompt} setPrompt={setPrompt} onVerify={handleVerify} isStreaming={isStreaming} />
+                  <Section10_SemanticProbe />
+                </div>
+                <div className="lg:col-span-2">
+                  <Section2_StreamingResponse />
+                </div>
+              </div>
+
+              {/* Real-time Verification Pipeline */}
+              <Section3_VerificationPipeline />
+
+              {/* Complex Analysis Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Section14_SignalFusion />
+                <Section15_TrustCalibration />
+              </div>
+
+              {/* Claims & Retrieval Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  <Section6_ClaimExtraction />
+                  <Section7_ClaimDependency />
+                </div>
+                <div className="space-y-6">
+                  <Section8_RetrievalPipeline />
+                  <Section9_EvidenceViewer />
+                </div>
+              </div>
+
+              {/* Alternative Verification Modalities */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Section11_CrossModelAgreement />
+                <Section12_SymbolicVerification />
+                <Section13_TemporalVerification />
+              </div>
+
+              {/* DAG & Timelines */}
+              <Section4_ExecutionGraph />
+              <Section17_AgentTimeline />
+              
+              {/* Telemetry & Receipts */}
+              <Section18_PerformanceCharts />
+              <Section19_LangSmithTrace />
+              <Section20_LiveLogs />
+              <Section21_VerificationReceipt />
+
+            </div>
+
+            {/* Right Column (Span 3) */}
+            <div className="col-span-12 xl:col-span-3 space-y-6 relative">
+              <div className="sticky top-0 space-y-6">
+                <Section16_TrustDashboard />
+                <RightSidePanel />
+                <Section5_StateInspector />
+              </div>
+            </div>
+
+          </div>
+
         </div>
+
+        {/* Bottom Status Bar */}
+        <BottomHealthPanel />
+        
       </div>
     </DashboardLayout>
   );

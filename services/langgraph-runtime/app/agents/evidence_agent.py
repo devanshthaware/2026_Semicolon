@@ -36,7 +36,7 @@ class BoundedEvidenceAgent:
         query = claim
         trace: list[RetrievalTrace] = []
         for attempt in range(1, self.maximum_attempts + 1):
-            passages = self.retriever.retrieve(query)
+            passages = self.retriever.search(query)
             score = passages[0].score if passages else 0.0
             if score >= self.confidence_target:
                 trace.append(RetrievalTrace(query, attempt, score, "sufficient-evidence"))

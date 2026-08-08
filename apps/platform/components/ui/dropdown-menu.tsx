@@ -29,16 +29,38 @@ function DropdownMenu({ children }: { children: React.ReactNode }) {
 
 const DropdownMenuTrigger = React.forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ onClick, ...props }, ref) => {
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
+>(({ asChild, onClick, ...props }, ref) => {
   const { open, setOpen } = useDropdownMenu()
+
+  const handleClick = (e: any) => {
+    setOpen(!open)
+    onClick?.(e)
+  }
+
+  if (asChild && React.isValidElement(props.children)) {
+    return React.cloneElement(props.children, {
+      ...props,
+      ...props.children.props,
+      onClick: (e: any) => {
+        handleClick(e)
+        props.children.props.onClick?.(e)
+      },
+      ref: (node: HTMLButtonElement) => {
+        if (typeof ref === 'function') ref(node)
+        else if (ref) (ref as any).current = node
+        
+        const childRef = (props.children as any).ref
+        if (typeof childRef === 'function') childRef(node)
+        else if (childRef) childRef.current = node
+      }
+    } as any)
+  }
+
   return (
     <button
       ref={ref}
-      onClick={(e) => {
-        setOpen(!open)
-        onClick?.(e)
-      }}
+      onClick={handleClick}
       {...props}
     />
   )
