@@ -1,7 +1,7 @@
 {
   "name": "argus",
   "private": true,
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@10.5.0",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -26,7 +26,10 @@
     "onlyBuiltDependencies": [
       "@prisma/engines",
       "prisma"
-    ]
+    ],
+    "overrides": {
+      "hono": "4.12.25"
+    }
   },
   "dependencies": {
     "@prisma/client": "^6.19.3"
