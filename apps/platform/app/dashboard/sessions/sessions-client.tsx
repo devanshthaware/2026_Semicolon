@@ -5,9 +5,10 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ChevronRight, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+import { ChevronRight, CheckCircle2, AlertCircle, Loader2, XCircle } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '@/services/api-client'
+import Link from 'next/link'
 
 interface Claim {
   text: string;
@@ -15,7 +16,7 @@ interface Claim {
 }
 
 interface Session {
-  id: number;
+  id: string;
   prompt: string;
   trust: number;
   status: 'verified' | 'warning' | 'failed';
@@ -23,11 +24,17 @@ interface Session {
 }
 
 export default function SessionsPage() {
-  const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [filter, setFilter] = useState<'all' | 'verified' | 'warning' | 'failed'>('all')
 
-  const { data: sessions, isLoading, isError } = useQuery<Session[]>({
+  const { data: sessions, isLoading, isError, refetch } = useQuery<Session[]>({
     queryKey: ['sessions'],
     queryFn: () => apiClient.get('/sessions')
+  })
+
+  const filteredSessions = sessions?.filter(session => {
+    if (filter === 'all') return true
+    return session.status === filter
   })
 
   return (
@@ -41,10 +48,10 @@ export default function SessionsPage() {
 
         {/* Filters */}
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" size="sm">All</Button>
-          <Button variant="outline" size="sm">✓ Verified</Button>
-          <Button variant="outline" size="sm">⚠ Warning</Button>
-          <Button variant="outline" size="sm">✗ Failed</Button>
+          <Button variant={filter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('all')}>All</Button>
+          <Button variant={filter === 'verified' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('verified')}>✓ Verified</Button>
+          <Button variant={filter === 'warning' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('warning')}>⚠ Warning</Button>
+          <Button variant={filter === 'failed' ? 'default' : 'outline'} size="sm" onClick={() => setFilter('failed')}>✗ Failed</Button>
         </div>
 
         {/* Sessions List */}
@@ -55,14 +62,20 @@ export default function SessionsPage() {
             </div>
           ) : isError ? (
             <div className="text-center py-8 text-destructive">
-              Failed to load sessions.
+              Unable to load verification sessions.
+              <Button variant="outline" size="sm" onClick={() => refetch()} className="ml-4">
+                Retry
+              </Button>
             </div>
-          ) : !sessions || sessions.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No verification sessions found.
+          ) : !filteredSessions || filteredSessions.length === 0 ? (
+            <div className="text-center py-12 border border-dashed rounded-lg space-y-3">
+              <p className="text-muted-foreground font-medium">No verification sessions yet.</p>
+              <Button asChild size="sm">
+                <Link href="/dashboard/playground">Run your first verification in Playground</Link>
+              </Button>
             </div>
           ) : (
-            sessions.map((session) => (
+            filteredSessions.map((session) => (
               <Card
                 key={session.id}
                 className="cursor-pointer hover:shadow-md transition-shadow"
@@ -72,13 +85,16 @@ export default function SessionsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <p className="font-medium">Session #{session.id}</p>
+                        <p className="font-medium">Session #{session.id.slice(0, 8)}</p>
                         <p className="text-sm text-muted-foreground">{session.prompt}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Badge variant="outline" className={session.status === 'verified' ? 'text-green-600 border-green-300' : 'text-yellow-600 border-yellow-300'}>
-                        {session.trust}% Trust
+                      <Badge variant="outline" className={
+                        session.status === 'verified' ? 'text-green-600 border-green-300' :
+                        session.status === 'warning' ? 'text-yellow-600 border-yellow-300' : 'text-red-600 border-red-300'
+                      }>
+                        {Math.round(session.trust * 100)}% Trust
                       </Badge>
                       <ChevronRight className={`h-5 w-5 transition-transform ${expandedId === session.id ? 'rotate-90' : ''}`} />
                     </div>
@@ -105,16 +121,22 @@ export default function SessionsPage() {
                       <div>
                         <h3 className="font-medium mb-3">Claims</h3>
                         <div className="space-y-2">
-                          {session.claims.map((claim, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              {claim.status === 'verified' ? (
-                                <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                              ) : (
-                                <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                              )}
-                              <span className="text-sm">{claim.text}</span>
-                            </div>
-                          ))}
+                          {session.claims.length === 0 ? (
+                            <p className="text-xs text-muted-foreground">No specific claim items extracted.</p>
+                          ) : (
+                            session.claims.map((claim, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                {claim.status === 'verified' ? (
+                                  <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                ) : claim.status === 'warning' ? (
+                                  <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                                ) : (
+                                  <XCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                                )}
+                                <span className="text-sm">{claim.text}</span>
+                              </div>
+                            ))
+                          )}
                         </div>
                       </div>
 

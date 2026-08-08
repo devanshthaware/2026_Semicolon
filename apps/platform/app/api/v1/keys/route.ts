@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "../../../../lib/db";
-import { createApiKey } from "../../../../lib/api-keys";
-import { isBootstrapAuthorized } from "../../../../lib/api-auth";
+import { db } from "@/lib/db";
+import { createApiKey } from "@/lib/api-keys";
+import { isBootstrapAuthorized } from "@/lib/api-auth";
+import { auth } from "@/auth";
 
 function unauthorized() { return NextResponse.json({ error: "Bootstrap authorization required" }, { status: 401 }); }
 
@@ -9,7 +10,17 @@ export async function GET(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.activeOrgId) return unauthorized();
   const keys = await db.apiKey.findMany({ where: { organizationId: session.user.activeOrgId }, orderBy: { createdAt: "desc" }, select: { id: true, name: true, prefix: true, status: true, createdAt: true, lastUsedAt: true, revokedAt: true } });
-  return NextResponse.json({ keys });
+  
+  const mapped = keys.map(k => ({
+    id: k.id,
+    name: k.name,
+    key: k.prefix + '••••••••',
+    usage: 0,
+    created: k.createdAt.toISOString().split('T')[0],
+    status: k.status.toLowerCase()
+  }));
+
+  return NextResponse.json(mapped);
 }
 
 export async function POST(request: NextRequest) {

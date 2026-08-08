@@ -116,11 +116,11 @@ class HybridRetriever:
         if client:
             model = get_model()
             vector = model.encode(claim).tolist()
-            results = client.search(
+            results = client.query_points(
                 collection_name=settings.qdrant_collection,
-                query_vector=vector,
+                query=vector,
                 limit=limit*2
-            )
+            ).points
             for hit in results:
                 payload = hit.payload or {}
                 dense_results.append(RetrievedPassage(

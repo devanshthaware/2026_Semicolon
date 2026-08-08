@@ -10,3 +10,4 @@ const nextConfig = {
 }
 
 export default nextConfig
+// Trigger restart to load NextAuth Secret

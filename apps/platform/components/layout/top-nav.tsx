@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Bell, Moon, Sun, Search, LogOut } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/providers/theme-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { signOut } from 'next-auth/react'
 
 export function TopNav() {
   const { theme, setTheme } = useTheme()
@@ -45,7 +46,9 @@ export function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
-              {theme === 'dark' ? (
+              {!mounted ? (
+                <div className="h-5 w-5" />
+              ) : theme === 'dark' ? (
                 <Moon className="h-5 w-5" />
               ) : (
                 <Sun className="h-5 w-5" />
@@ -71,7 +74,7 @@ export function TopNav() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
               <LogOut className="mr-2 h-4 w-4" />
               Logout
             </DropdownMenuItem>

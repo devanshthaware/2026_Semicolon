@@ -4,8 +4,8 @@ export type NewApiKey = { secret: string; prefix: string; secretHash: string };
 
 export function createApiKey(): NewApiKey {
   const token = randomBytes(24).toString("base64url");
-  const secret = `tl_live_${token}`;
-  return { secret, prefix: secret.slice(0, 13), secretHash: hashApiKey(secret) };
+  const secret = `argus_live_${token}`;
+  return { secret, prefix: secret.slice(0, 15), secretHash: hashApiKey(secret) };
 }
 
 export function hashApiKey(secret: string) {

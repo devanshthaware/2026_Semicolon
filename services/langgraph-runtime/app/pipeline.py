@@ -33,6 +33,45 @@ class VerificationPipeline:
         self.conformal = ConformalCalibrator()
         self.sep = SemanticEntropyProbe()
 
+    async def verify_stream(self, request: VerifyRequest):
+        import json
+        import asyncio
+        
+        # Simulate token streaming for the provided response
+        if request.response:
+            words = request.response.split()
+            for word in words:
+                yield f"data: {json.dumps({'type': 'token', 'payload': {'text': word + ' ', 'timestamp': datetime.now(timezone.utc).isoformat()}})}\n\n"
+                await asyncio.sleep(0.05)
+                
+        yield f"data: {json.dumps({'type': 'agent_start', 'payload': {'id': 'ext', 'name': 'Claim Extractor', 'status': 'running'}})}\n\n"
+        
+        extracted = extract_claims(request.response)
+        for i, text in enumerate(extracted, 1):
+            yield f"data: {json.dumps({'type': 'claim_extracted', 'payload': {'id': f'clm_{i}', 'text': text}})}\n\n"
+            
+        yield f"data: {json.dumps({'type': 'agent_end', 'payload': {'id': 'ext', 'name': 'Claim Extractor', 'status': 'complete'}})}\n\n"
+
+        claim_results = []
+        for index, text in enumerate(extracted, 1):
+            yield f"data: {json.dumps({'type': 'agent_start', 'payload': {'id': f'ret_{index}', 'name': 'Hybrid Retriever', 'status': 'running'}})}\n\n"
+            
+            # For simplicity in this demo stream, we'll verify factually
+            claim = await self._verify_factual_claim(index, text, request.samples or [])
+            claim_results.append(claim)
+            
+            if claim.evidence:
+                best = claim.evidence[0]
+                yield f"data: {json.dumps({'type': 'retrieval', 'payload': {'source': best.source, 'snippet': best.snippet, 'score': best.retrieval_score}})}\n\n"
+            
+            yield f"data: {json.dumps({'type': 'agent_end', 'payload': {'id': f'ret_{index}', 'name': 'Hybrid Retriever', 'status': 'complete'}})}\n\n"
+            
+            yield f"data: {json.dumps({'type': 'agent_start', 'payload': {'id': f'ver_{index}', 'name': 'NLI Verifier (DeBERTa)', 'status': 'running'}})}\n\n"
+            yield f"data: {json.dumps({'type': 'trust_update', 'payload': {'score': claim.trust}})}\n\n"
+            yield f"data: {json.dumps({'type': 'agent_end', 'payload': {'id': f'ver_{index}', 'name': 'NLI Verifier', 'status': 'complete'}})}\n\n"
+
+        yield f"data: {json.dumps({'type': 'workflow_complete', 'payload': {}})}\n\n"
+
     async def verify(self, request: VerifyRequest) -> VerifyResult:
         extracted = extract_claims(request.response)
         claim_results = await asyncio.gather(*(self._verify_claim(index, text, request.samples or []) for index, text in enumerate(extracted, 1)))

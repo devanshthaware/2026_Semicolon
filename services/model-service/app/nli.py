@@ -3,8 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from app.config import settings
-from app.retrieval import tokens
+import re
 
+def tokens(text: str) -> set[str]:
+    return set(text.lower().split())
 
 @dataclass(frozen=True)
 class NLIResult:

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useStreamingStore, StreamEvent } from '../store/useStreamingStore';
 
-export function useVerificationStream(sessionId: string | null) {
+export function useVerificationStream(sessionId: string | null, prompt: string) {
   const {
     setIsStreaming,
     addEvent,
@@ -23,8 +23,8 @@ export function useVerificationStream(sessionId: string | null) {
     }
 
     setIsStreaming(true);
-    // Connect to the local API Gateway (assuming it runs on localhost:8000 for local dev)
-    const url = `http://localhost:8000/api/v1/verify/${sessionId}/stream`;
+    // Connect to the Python API Gateway directly
+    const url = `http://localhost:8000/v1/verify/${sessionId}/stream?prompt=${encodeURIComponent(prompt)}`;
     const eventSource = new EventSource(url);
     eventSourceRef.current = eventSource;
 

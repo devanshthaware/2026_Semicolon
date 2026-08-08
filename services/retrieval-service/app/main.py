@@ -12,7 +12,7 @@ class RetrieveRequest(BaseModel):
 
 @app.post("/retrieve")
 def retrieve(req: RetrieveRequest):
-    passages = retriever.search(req.query)
+    passages = retriever.retrieve(req.query)
     # Convert dataclasses to dicts
     return {
         "passages": [{"text": p.text, "source": p.source, "score": p.score} for p in passages],
