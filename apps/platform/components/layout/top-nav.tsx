@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Bell, Moon, Sun, Search, LogOut } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/providers/theme-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {

@@ -8,9 +8,24 @@ import { Button } from '@/components/ui/button'
 
 export function DashboardLayout({ children, fullWidth = false }: { children: React.ReactNode, fullWidth?: boolean }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className="flex h-screen bg-background opacity-0">
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <main className="flex-1 overflow-auto">{children}</main>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background" suppressHydrationWarning>
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
