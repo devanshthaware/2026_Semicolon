@@ -14,6 +14,7 @@ import {
   Users,
   Cpu,
   Network,
+  CreditCard,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -29,6 +30,7 @@ const navItems: NavItem[] = [
   { href: '/dashboard/playground', label: 'Playground', icon: <Gamepad2 className="h-5 w-5" />, section: 'main' },
   { href: '/dashboard/sessions', label: 'Sessions', icon: <History className="h-5 w-5" />, section: 'main' },
   { href: '/dashboard/api-keys', label: 'API Keys', icon: <Key className="h-5 w-5" />, section: 'main' },
+  { href: '/dashboard/pricing', label: 'Pricing', icon: <CreditCard className="h-5 w-5" />, section: 'main' },
   { href: '/dashboard/analytics', label: 'Analytics', icon: <BarChart3 className="h-5 w-5" />, section: 'main' },
   { href: '/dashboard/docs', label: 'Docs', icon: <BookOpen className="h-5 w-5" />, section: 'main' },
   { href: '/dashboard/settings', label: 'Settings', icon: <Settings className="h-5 w-5" />, section: 'main' },
