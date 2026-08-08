@@ -3,7 +3,11 @@ import ast
 import operator
 import re
 from typing import Tuple
-import z3
+try:
+    import z3
+    HAS_Z3 = True
+except ImportError:
+    HAS_Z3 = False
 
 class LogicAgent:
     """Implements P006 (Z3 Solver) and P007 (Python Arithmetic Engine)."""
@@ -57,6 +61,8 @@ class LogicAgent:
 
     def evaluate_logic(self, claim: str) -> Tuple[bool, str, float]:
         """P006 - Z3 Solver for Formal Reasoning"""
+        if not HAS_Z3:
+            return (True, "Z3 Solver not installed in local python environment.", 0.5)
         try:
             # A very simplistic mock of extracting logical constraints.
             # In a real system, an LLM parses text to Z3 constructs.

@@ -23,12 +23,26 @@ model User {
   email         String               @unique
   name          String?
   passwordHash  String?
+  role          String               @default("USER") // USER | ADMIN
+  status        String               @default("ACTIVE") // ACTIVE | SUSPENDED
   emailVerified DateTime?
   image         String?
   createdAt     DateTime             @default(now())
   organizations OrganizationMember[]
   accounts      Account[]
   sessions      Session[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  admin     String
+  action    String
+  target    String?
+  result    String   @default("SUCCESS")
+  details   Json?
+
+  @@index([timestamp])
 }
 
 model Account {

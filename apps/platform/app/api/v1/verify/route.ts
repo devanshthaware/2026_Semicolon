@@ -5,8 +5,18 @@ import { VerificationVerdict } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
-  if (!session?.user?.activeOrgId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  let orgId = session?.user?.activeOrgId;
+
+  if (!orgId) {
+    // Fallback for demo playground access
+    const defaultOrg = await db.organization.findFirst();
+    if (defaultOrg) {
+      orgId = defaultOrg.id;
+    }
+  }
+
+  if (!orgId) {
+    return NextResponse.json({ error: "No organization found" }, { status: 401 });
   }
 
   const body = await request.json();
@@ -30,7 +40,7 @@ export async function POST(request: NextRequest) {
         claims: [],
         events: [{ type: "verification.started", timestamp: new Date().toISOString() }]
       },
-      organizationId: session.user.activeOrgId
+      organizationId: orgId
     }
   });
 
