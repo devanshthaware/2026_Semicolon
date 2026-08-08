@@ -1,100 +1,154 @@
 import React from 'react';
 import { useMockPlaygroundStore } from '@/store/useMockPlaygroundStore';
+import { useRealtimePlaygroundStore } from '@/store/useRealtimePlaygroundStore';
 
 export const TrustScorePanel = () => {
-  const { scenario, elapsedMs, machineState } = useMockPlaygroundStore();
-  const isComplete = machineState === 'COMPLETE';
+  const mockStore = useMockPlaygroundStore();
+  const realtimeStore = useRealtimePlaygroundStore();
 
-  // We only reveal the final trust score when we reach 'Calibration' step in the timeline
-  // The 'Calibration' step is usually around 2400ms
-  const calibrationEvent = scenario.timeline.find(e => e.event === 'Calibration');
-  const showScore = elapsedMs >= (calibrationEvent?.timeMs || 2400);
+  const isRealtime = realtimeStore.executionMode === 'REAL-TIME';
 
-  if (!showScore && machineState !== 'COMPLETE') {
+  if (!isRealtime) {
+    const { scenario, elapsedMs, machineState } = mockStore;
+    const calibrationEvent = scenario.timeline.find(e => e.event === 'Calibration');
+    const showScore = elapsedMs >= (calibrationEvent?.timeMs || 2400);
+
+    if (!showScore && machineState !== 'COMPLETE') {
+      return (
+        <div className="flex flex-col gap-3 p-6 border rounded-lg bg-card text-card-foreground min-h-[400px] items-center justify-center">
+          <p className="text-muted-foreground text-sm uppercase tracking-widest animate-pulse">Calculating Trust...</p>
+        </div>
+      );
+    }
+
+    const trustPercent = Math.round(scenario.finalTrust * 100);
+    let riskLevel = 'LOW';
+    let riskColor = 'text-emerald-500';
+    let riskBg = 'bg-emerald-500/10 border-emerald-500/30';
+    
+    if (trustPercent < 60) {
+      riskLevel = 'HIGH';
+      riskColor = 'text-rose-500';
+      riskBg = 'bg-rose-500/10 border-rose-500/30';
+    } else if (trustPercent < 80) {
+      riskLevel = 'MEDIUM';
+      riskColor = 'text-amber-500';
+      riskBg = 'bg-amber-500/10 border-amber-500/30';
+    }
+
     return (
-      <div className="flex flex-col gap-3 p-6 border rounded-lg bg-card text-card-foreground min-h-[400px] items-center justify-center">
-        <p className="text-muted-foreground text-sm uppercase tracking-widest animate-pulse">Calculating Trust...</p>
+      <div className="flex flex-col gap-6 p-6 border rounded-lg bg-card text-card-foreground min-h-[400px] relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">FINAL ARGUS TRUST (MOCK)</h2>
+        <div className="flex flex-col items-center justify-center py-4">
+          <div className={`text-6xl font-bold font-mono tracking-tighter ${riskColor}`}>
+            {trustPercent}%
+          </div>
+          <div className={`mt-3 px-4 py-1 rounded-full border text-xs font-bold tracking-widest ${riskBg} ${riskColor}`}>
+            RISK: {riskLevel}
+          </div>
+        </div>
+        <div className="space-y-3 w-full text-xs">
+          <div className="flex justify-between items-center border-b border-border pb-2">
+            <span className="text-muted-foreground">Status</span>
+            <span className="font-semibold">{trustPercent < 60 ? 'UNTRUSTWORTHY' : trustPercent < 80 ? 'REQUIRES ATTENTION' : 'VERIFIED'}</span>
+          </div>
+          <div className="flex justify-between items-center border-b border-border pb-2">
+            <span className="text-muted-foreground">Confidence Interval</span>
+            <span className="font-mono">{scenario.confidenceInterval}</span>
+          </div>
+          <div className="flex justify-between items-center border-b border-border pb-2">
+            <span className="text-muted-foreground">Evidence Coverage</span>
+            <span className="font-mono">{Math.round(scenario.evidenceCoverage * 100)}%</span>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const trustPercent = Math.round(scenario.finalTrust * 100);
-  
+  // Real-Time Trust Panel
+  const { trustScore, receipt, machineState, claims } = realtimeStore;
+
+  if (machineState === 'IDLE' || (!trustScore && machineState !== 'COMPLETE')) {
+    return (
+      <div className="flex flex-col gap-3 p-6 border rounded-lg bg-card text-card-foreground min-h-[400px] items-center justify-center">
+        {machineState === 'IDLE' ? (
+          <p className="text-muted-foreground text-sm">Trust score will compute live once verification runs.</p>
+        ) : (
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-muted-foreground text-xs uppercase tracking-widest animate-pulse">Calculating Real Trust Signals...</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const scoreVal = trustScore ? Math.round(trustScore * 100) : 75;
   let riskLevel = 'LOW';
-  let riskColor = 'text-green-500';
-  let riskBg = 'bg-green-500/10 border-green-500/30';
-  
-  if (trustPercent < 60) {
+  let riskColor = 'text-emerald-400';
+  let riskBg = 'bg-emerald-500/10 border-emerald-500/30';
+
+  if (scoreVal < 60) {
     riskLevel = 'HIGH';
-    riskColor = 'text-red-500';
-    riskBg = 'bg-red-500/10 border-red-500/30';
-  } else if (trustPercent < 80) {
+    riskColor = 'text-rose-400';
+    riskBg = 'bg-rose-500/10 border-rose-500/30';
+  } else if (scoreVal < 80) {
     riskLevel = 'MEDIUM';
-    riskColor = 'text-amber-500';
+    riskColor = 'text-amber-400';
     riskBg = 'bg-amber-500/10 border-amber-500/30';
   }
 
-  // Count claims by status
-  const claimsCount = scenario.claims.length;
-  const supported = scenario.claims.filter(c => c.finalVerdict === 'SUPPORTED').length;
-  const corrected = scenario.claims.filter(c => c.finalVerdict === 'PASS' && c.correctionAttempt1).length;
-  const uncertain = scenario.claims.filter(c => c.finalVerdict === 'UNCERTAIN' || c.finalVerdict === 'FLAGGED').length;
-  const contradicted = scenario.claims.filter(c => c.finalVerdict === 'CONTRADICTED').length;
+  const grounded = claims.filter(c => c.verdict === 'GROUNDED').length;
+  const contradicted = claims.filter(c => c.verdict === 'CONTRADICTED').length;
 
   return (
-    <div className="flex flex-col gap-6 p-6 border rounded-lg bg-card text-card-foreground min-h-[400px] relative overflow-hidden">
+    <div className="flex flex-col gap-5 p-6 border rounded-lg bg-card text-card-foreground min-h-[400px] relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
       
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">FINAL ARGUS TRUST</h2>
-      
-      <div className="flex flex-col items-center justify-center py-6">
-        <div className={`text-7xl font-bold font-mono tracking-tighter ${riskColor}`}>
-          {trustPercent}%
+      <div className="flex justify-between items-center">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">REAL-TIME ARGUS TRUST</h2>
+        <span className="text-xs font-mono text-emerald-400">FUSED SCORE</span>
+      </div>
+
+      <div className="flex flex-col items-center justify-center py-4">
+        <div className={`text-6xl font-bold font-mono tracking-tighter ${riskColor}`}>
+          {scoreVal}%
         </div>
-        <div className={`mt-4 px-4 py-1 rounded-full border text-sm font-bold tracking-widest ${riskBg} ${riskColor}`}>
+        <div className={`mt-3 px-4 py-1 rounded-full border text-xs font-bold tracking-widest ${riskBg} ${riskColor}`}>
           RISK: {riskLevel}
         </div>
       </div>
 
-      <div className="space-y-4 w-full">
+      <div className="space-y-3 w-full text-xs">
         <div className="flex justify-between items-center border-b border-border pb-2">
-          <span className="text-muted-foreground text-sm">Status</span>
-          <span className="font-semibold text-sm">
-            {trustPercent < 60 ? 'UNTRUSTWORTHY' : trustPercent < 80 ? 'REQUIRES ATTENTION' : 'VERIFIED'}
-          </span>
-        </div>
-        
-        <div className="flex justify-between items-center border-b border-border pb-2">
-          <span className="text-muted-foreground text-sm">Confidence Interval</span>
-          <span className="font-mono text-sm">{scenario.confidenceInterval}</span>
+          <span className="text-muted-foreground">Verdict</span>
+          <span className="font-semibold uppercase">{scoreVal >= 80 ? 'GROUNDED' : scoreVal >= 55 ? 'REVIEW' : 'FLAGGED'}</span>
         </div>
 
         <div className="flex justify-between items-center border-b border-border pb-2">
-          <span className="text-muted-foreground text-sm">Evidence Coverage</span>
-          <span className="font-mono text-sm">{Math.round(scenario.evidenceCoverage * 100)}%</span>
+          <span className="text-muted-foreground">Conformal Calibration</span>
+          <span className="font-mono text-amber-400">{receipt?.calibrated_status || 'UNCALIBRATED'}</span>
+        </div>
+
+        <div className="flex justify-between items-center border-b border-border pb-2">
+          <span className="text-muted-foreground">Confidence Interval</span>
+          <span className="font-mono">{receipt?.conformal_interval ? JSON.stringify(receipt.conformal_interval) : 'UNAVAILABLE'}</span>
         </div>
       </div>
 
-      <div className="mt-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Claim Resolution</h3>
-        <div className="grid grid-cols-2 gap-2 text-sm">
+      <div className="mt-2">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Claim Summary</h3>
+        <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="flex justify-between p-2 bg-muted/30 rounded border border-border">
-            <span className="text-muted-foreground">Total</span>
-            <span className="font-mono">{claimsCount}</span>
+            <span className="text-muted-foreground">Extracted</span>
+            <span className="font-mono">{claims.length}</span>
           </div>
-          <div className="flex justify-between p-2 bg-green-500/10 rounded border border-green-500/20 text-green-500">
-            <span>Supported</span>
-            <span className="font-mono">{supported}</span>
+          <div className="flex justify-between p-2 bg-emerald-500/10 rounded border border-emerald-500/20 text-emerald-400">
+            <span>Grounded</span>
+            <span className="font-mono">{grounded}</span>
           </div>
-          <div className="flex justify-between p-2 bg-blue-500/10 rounded border border-blue-500/20 text-blue-500">
-            <span>Corrected</span>
-            <span className="font-mono">{corrected}</span>
-          </div>
-          <div className="flex justify-between p-2 bg-amber-500/10 rounded border border-amber-500/20 text-amber-500">
-            <span>Uncertain</span>
-            <span className="font-mono">{uncertain}</span>
-          </div>
-          <div className="flex justify-between p-2 bg-red-500/10 rounded border border-red-500/20 text-red-500 col-span-2">
+          <div className="flex justify-between p-2 bg-rose-500/10 rounded border border-rose-500/20 text-rose-400 col-span-2">
             <span>Contradicted</span>
             <span className="font-mono">{contradicted}</span>
           </div>
